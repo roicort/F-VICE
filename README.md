@@ -1,24 +1,13 @@
-# Proyecto Final de ML
+# F-VICE
+**Forecasting Velocity of Ice in Glaciers**
 
 <img src="https://pcic.posgrado.unam.mx/wp-content/uploads/Ciencia-e-Ingenieria-de-la-Computacion_color.png" alt="Logo PCIC" width="128" />
 
-## Requerimientos
+## TL;DR
 
-El proyecto final consistirá en proponer un problema relevante y diseñar, desarrollar y evaluar un sistema basado en aprendizaje automático para resolver dicho problema. Los proyectos pueden ser realizados de forma individual o en equipo de 2 personas.
-
-La propuesta debe ser de máximo 3 cuartillas y debe incluir:
-
-- Título
-- Descripción y delimitación del problema
-- Objetivos
-- Justificación
-- Conjunto de datos a utilizar (o estrategia para recopilarla)
-- Análisis exploratorio del conjunto de datos
-- Conformación del equipo (en su caso)
-
-> Sugerencias: Piensa en problemas donde aplicar aprendizaje automatizado y elige aquellos que puedas realizar durante el semestre y en los que existan suficientes datos disponibles. Puedes tomar ideas de competencias (por ej. en Kaggle,  CLEF, Iberlef, SEMEVAL) o de problemas existentes en otras áreas que puedas abordar con aprendizaje automatizado.
-
----
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh && uv run main.py
+```
 
 ## Propuesta
 
@@ -48,12 +37,6 @@ Adicionalmente, el derretimiento de los glaciares es un problema que afecta a to
 Los datos a utilizar serán los datos de satélite y de sensores instalados en los glaciares del proyecto ITS_LIVE de la NASA. Estos datos contienen información sobre la velocidad de flujo del hielo en los glaciares, así como sobre las condiciones climáticas y geográficas de los mismos.
 
 Estos datos estan disponibles en el siguiente enlace: [ITS_LIVE](https://its-live.jpl.nasa.gov/) o en su visualizador: https://mappin.itsliveiceflow.science
-
-### Análisis exploratorio del conjunto de datos
-
-Los datos de ITS_LIVE contienen información sobre la velocidad de flujo del hielo en los glaciares, así como sobre las condiciones climáticas y geográficas de los mismos. Estos datos se presentan en forma de series de tiempo, lo que permite analizar su comportamiento a lo largo del tiempo.
-
-En el notebook adjunto se presenta un análisis exploratorio de los datos de ITS_LIVE, en el que se muestra la distribución de la velocidad de flujo del hielo en los glaciares, así como su comportamiento a lo largo del tiempo.
 
 ### Conformación del equipo
 
