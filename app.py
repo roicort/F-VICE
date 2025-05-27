@@ -134,13 +134,15 @@ min_dt, max_dt = st.slider(
 )
 
 # Graficar datos
-if st.session_state.coords and st.button("Graficar serie de tiempo"):
-    with st.spinner("Descargando y graficando datos..."):
-        df = get_itslive([st.session_state.coords])
-        df = get_processed_data(df, min_dt=min_dt, max_dt=max_dt)
-    if df.empty:
-        st.error("No se encontraron datos para las coordenadas seleccionadas.")
-    else:
+if st.session_state.coords:
+    if st.button("Graficar serie de tiempo"):
+        with st.spinner("Descargando y graficando datos..."):
+            df = get_itslive([st.session_state.coords])
+            df = get_processed_data(df, min_dt=min_dt, max_dt=max_dt)
+            st.session_state.df = df  # Guarda el DataFrame en el estado de sesión
+    # Mostrar la gráfica y la tabla si ya hay datos en el estado de sesión
+    if "df" in st.session_state and not st.session_state.df.empty:
+        df = st.session_state.df
         fig = px.scatter(
             df,
             x="mid_date",
@@ -150,8 +152,31 @@ if st.session_state.coords and st.button("Graficar serie de tiempo"):
             trendline="lowess",
             color_discrete_sequence=[primary_color]
         )
-
         st.plotly_chart(fig, use_container_width=True)
         st.dataframe(df)
+        # Botón para entrenar el modelo
         if st.button("Entrenar modelo de predicción"):
-            st.info("Aquí irá el entrenamiento del modelo de predicción.")
+            split_idx = int(len(df) * 0.50)
+            X = df[['mid_date','year', 'month', 'dayofyear']]
+            y = df['v']
+            X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
+            y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
+
+            plot_df = pd.DataFrame({
+                'date': pd.concat([X_train['mid_date'], X_test['mid_date']]),
+                'v [m/yr]': pd.concat([y_train, y_test]),
+                'split': ['train'] * len(X_train) + ['test'] * len(X_test)
+            })
+
+            fig = px.scatter(
+                plot_df,
+                x='date',
+                y='v [m/yr]',
+                color='split',
+                title='Train/Test Split: v [m/yr] over Time',
+                opacity=0.7,
+                trendline='lowess',
+            )
+            st.plotly_chart(fig, use_container_width=True)
+    elif "df" in st.session_state and st.session_state.df.empty:
+        st.error("No se encontraron datos para las coordenadas seleccionadas.")
