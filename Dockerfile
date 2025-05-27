@@ -1,6 +1,7 @@
 # app/Dockerfile
 
-FROM python:3.12-slim
+FROM python:3.12-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
@@ -10,14 +11,10 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sSL https://install.uv.tools | bash
-
 COPY . .
-
-RUN uv run
 
 EXPOSE 8888
 
 HEALTHCHECK CMD curl --fail http://localhost:8888/_stcore/health
 
-ENTRYPOINT ["uv","run", "streamlit", "run", "app.py", "--server.port=8888", "--server.address=0.0.0.0"]
+CMD ["uv","run", "streamlit", "run", "app.py", "--server.port=8888", "--server.address=0.0.0.0"]
