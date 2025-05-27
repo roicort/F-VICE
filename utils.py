@@ -36,3 +36,15 @@ def get_processed_data(df, min_dt=1, max_dt=120):
     df["dayofyear"] = df["mid_date"].dt.dayofyear
 
     return df.sort_values(by="mid_date").reset_index(drop=True)
+
+def get_future_dates(start, until='2030-12-31'):
+    start_date = (start + pd.Timedelta(days=1))
+    end_date = pd.Timestamp(until, tz='UTC')
+
+    future_dates = pd.DataFrame(pd.date_range(start=start_date, end=end_date, freq='D'))
+    future_dates.columns = ['mid_date']
+    future_dates['year'] = future_dates['mid_date'].dt.year
+    future_dates['month'] = future_dates['mid_date'].dt.month
+    future_dates['dayofyear'] = future_dates['mid_date'].dt.dayofyear
+
+    return future_dates[['mid_date', 'year', 'month', 'dayofyear']].reset_index(drop=True)

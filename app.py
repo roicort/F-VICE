@@ -3,7 +3,7 @@ from streamlit_folium import st_folium
 import folium
 import pandas as pd
 import plotly.express as px
-from utils import get_itslive, get_processed_data
+from utils import get_itslive, get_processed_data, get_future_dates
 import json
 
 st.set_page_config(layout="wide")
@@ -154,6 +154,14 @@ if st.session_state.coords:
         )
         st.plotly_chart(fig, use_container_width=True)
         st.dataframe(df)
+
+        # Selector de modelo
+        modelo_sel = st.selectbox(
+            "Selecciona el modelo de predicción:",
+            options=["XGBoost"],
+            key="modelo_sel"
+        )
+
         # Botón para entrenar el modelo
         if st.button("Entrenar modelo de predicción"):
             split_idx = int(len(df) * 0.50)
@@ -162,21 +170,82 @@ if st.session_state.coords:
             X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
             y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
 
-            plot_df = pd.DataFrame({
+            st.session_state.plot_df = pd.DataFrame({
                 'date': pd.concat([X_train['mid_date'], X_test['mid_date']]),
                 'v [m/yr]': pd.concat([y_train, y_test]),
                 'split': ['train'] * len(X_train) + ['test'] * len(X_test)
             })
 
             fig = px.scatter(
-                plot_df,
+                st.session_state.plot_df,
                 x='date',
                 y='v [m/yr]',
                 color='split',
-                title='Train/Test Split: v [m/yr] over Time',
+                title=f'Train/Test Split: v [m/yr] over Time ({modelo_sel})',
                 opacity=0.7,
                 trendline='lowess',
             )
             st.plotly_chart(fig, use_container_width=True)
-    elif "df" in st.session_state and st.session_state.df.empty:
-        st.error("No se encontraron datos para las coordenadas seleccionadas.")
+
+            if modelo_sel == "XGBoost":
+                with st.spinner("Entrenando modelo XGBoost..."):
+                        from model import get_xgboost_model
+                        model, scores = get_xgboost_model(X_train, y_train)
+                        st.session_state.model = model
+                        st.success(f"Modelo {modelo_sel} entrenado exitosamente.")
+                        st.write(f"Cross-validated neg_mean_squared_log_error: {-scores.mean():.4f} ± {scores.std():.4f}")
+
+            # Una vez entrenado el modelo, puedes hacer predicciones
+            if st.session_state.model:
+                with st.spinner("Realizando predicciones..."):
+                    preds = st.session_state.model.predict(X_test[['year', 'month', 'dayofyear']])
+                    st.session_state.preds = pd.DataFrame({
+                        'date': X_test['mid_date'],
+                        'v_pred [m/yr]': preds,
+                    })
+                    st.success("Predicciones realizadas exitosamente.")
+
+                    future_dates = get_future_dates(X_test['mid_date'].iloc[-1], until='2030-12-31')
+                    future_predictions = model.predict(future_dates[['year', 'month', 'dayofyear']])
+
+                    # Crear DataFrame para las predicciones
+                    pred_df = pd.DataFrame({
+                        'date': future_dates['mid_date'],
+                        'v_pred [m/yr]': future_predictions,
+                    })
+
+                    # Graficar puntos reales y predicciones
+                    fig = px.scatter(
+                        st.session_state.plot_df,
+                        x='date',
+                        y='v [m/yr]',
+                        color='split',
+                        title='Train/Test Split & Predictions: v [m/yr] over Time',
+                        opacity=0.4,
+                        trendline='lowess',
+                    )
+
+                    # Agregar las predicciones como línea
+                    fig.add_scatter(
+                        x=st.session_state.preds['date'],
+                        y=st.session_state.preds['v_pred [m/yr]'],
+                        mode='lines',
+                        name='Predicción (test)',
+                        line=dict(color="#4e59f6", width=2),
+                    )
+
+                    # Agregar las predicciones futuras
+                    fig.add_scatter(
+                        x=future_dates['mid_date'],
+                        y=future_predictions,
+                        mode='lines',
+                        name='Predicción (futuro)',
+                        line=dict(color="#e006bf", width=2),
+                    )
+
+                    st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.error("No se ha entrenado ningún modelo. Por favor, entrena un modelo primero.")
+
+        elif "df" in st.session_state and st.session_state.df.empty:
+            st.error("No se encontraron datos para las coordenadas seleccionadas.")
