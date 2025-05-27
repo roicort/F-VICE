@@ -23,18 +23,16 @@ def get_processed_data(df, min_dt=1, max_dt=120):
     if df.empty:
         raise ValueError("DataFrame is empty. No data to process.")
     
-    df = df.dropna(subset=["v"])
-    df["mid_date"] = pd.to_datetime(df["mid_date"])
-    # Convertir min_dt y max_dt a Timedelta (asumiendo días)
+    df = df.dropna(subset=["v"]).copy()
+    df["mid_date"] = pd.to_datetime(df["mid_date"], utc=True)
+
     min_dt = pd.Timedelta(days=min_dt)
     max_dt = pd.Timedelta(days=max_dt)
-    df = df[(df["date_dt"] >= min_dt) & (df["date_dt"] <= max_dt)]
+    df = df[(df["date_dt"] >= min_dt) & (df["date_dt"] <= max_dt)].copy()
 
-    df['mid_date'] = pd.to_datetime(df['mid_date'], utc=True)
-    df['v'] = df['v'].astype(int)
+    df["v"] = df["v"].astype(int)
+    df["year"] = df["mid_date"].dt.year
+    df["month"] = df["mid_date"].dt.month
+    df["dayofyear"] = df["mid_date"].dt.dayofyear
 
-    df['year'] = df['mid_date'].dt.year
-    df['month'] = df['mid_date'].dt.month
-    df['dayofyear'] = df['mid_date'].dt.dayofyear
-
-    return df.sort_values(by='mid_date').reset_index(drop=True)
+    return df.sort_values(by="mid_date").reset_index(drop=True)
