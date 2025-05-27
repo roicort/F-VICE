@@ -3,28 +3,15 @@ from streamlit_folium import st_folium
 import folium
 import pandas as pd
 import plotly.express as px
+from utils import get_itslive
+import json
 
-from its_live.datacube_tools import DATACUBETOOLS as dctools
-
-def descargar_series_tiempo(coords_list, variable="v"):
-    dct = dctools()
-    dfs = []
-    for lat, lon in coords_list:
-        ins3xr, ds_point, point_tilexy = dct.get_timeseries_at_point([lon, lat], "4326", variables=[variable])
-        if ins3xr is not None and point_tilexy is not None:
-            export = ins3xr[
-                ["v", "v_error", "vx", "vx_error", "vy", "vy_error", "date_dt", "satellite_img1", "mission_img1"]
-            ].sel(x=point_tilexy[0], y=point_tilexy[1], method="nearest")
-            df = export.to_dataframe().reset_index()
-            df["lat"] = lat
-            df["lon"] = lon
-            dfs.append(df)
-    if dfs:
-        return pd.concat(dfs, ignore_index=True)
-    else:
-        return pd.DataFrame()
+st.set_page_config(layout="wide")
+primary_color = st.get_option("theme.primaryColor")
 
 st.title("ITS_LIVE! Predicción de series de tiempo de Velocidad de Glaciares")
+st.write("")
+st.write("Consulta los datos originales de [ITS_LIVE](https://its-live.jpl.nasa.gov).")
 st.write("Haz clic en el mapa para seleccionar un punto. O usa los campos manuales para mover el marcador.")
 
 # Estado para el punto seleccionado
@@ -35,8 +22,15 @@ if "manual_lat" not in st.session_state:
 if "manual_lon" not in st.session_state:
     st.session_state.manual_lon = -45.0
 
-# Mapa base
-m = folium.Map(location=[70, -45], zoom_start=3)
+# Mapa base: centra y haz zoom si hay coordenadas seleccionadas
+if st.session_state.coords:
+    map_center = st.session_state.coords
+    zoom = 8 
+else:
+    map_center = [70, -45]
+    zoom = 3
+
+m = folium.Map(location=map_center, zoom_start=zoom)
 
 # Agregar marcador si hay punto seleccionado
 if st.session_state.coords:
@@ -73,7 +67,7 @@ coastlines.add_to(m)
 folium.LayerControl().add_to(m)
 
 # Mostrar mapa en Streamlit
-map_data = st_folium(m, width=700, height=500)
+map_data = st_folium(m, width=1000, height=500)
 
 # Si se selecciona un punto en el mapa, actualiza los inputs y el marcador
 if map_data and map_data["last_clicked"]:
@@ -88,6 +82,25 @@ if map_data and map_data["last_clicked"]:
 def actualizar_coords():
     st.session_state.coords = (st.session_state.manual_lat, st.session_state.manual_lon)
     st.rerun()
+
+with open("glaciares.json") as f:
+    glaciares = json.load(f)
+
+def seleccionar_glaciar():
+    coords = glaciares[st.session_state.glaciar_sel]
+    if coords:
+        st.session_state.coords = coords
+        st.session_state.manual_lat = coords[0]
+        st.session_state.manual_lon = coords[1]
+        st.rerun()
+
+# Selector de glaciar predefinido
+st.selectbox(
+    "O selecciona un glaciar predefinido:",
+    options=["Selecciona un glaciar"] + list(glaciares.keys()),
+    key="glaciar_sel",
+    on_change=seleccionar_glaciar,
+)
 
 # Inputs numéricos para latitud y longitud sincronizados y reactivos
 col1, col2 = st.columns(2)
@@ -116,14 +129,14 @@ min_dt, max_dt = st.slider(
     "Intervalo (días)",
     min_value=0,
     max_value=365,
-    value=(5, 90),
+    value=(1, 120),
     step=1
 )
 
 # Graficar datos
 if st.session_state.coords and st.button("Graficar serie de tiempo"):
     with st.spinner("Descargando y graficando datos..."):
-        df = descargar_series_tiempo([st.session_state.coords])
+        df = get_itslive([st.session_state.coords])
         df = df.dropna(subset=["v"]) 
     if df.empty:
         st.warning("No se encontraron datos para la coordenada seleccionada.")
@@ -149,8 +162,11 @@ if st.session_state.coords and st.button("Graficar serie de tiempo"):
                 y="v",
                 labels={"v": "Velocidad (m/año)", "mid_date": "Fecha"},
                 title=f"Serie de tiempo de velocidad ITS_LIVE ({min_dt}-{max_dt} días)",
-                trendline="lowess"
+                trendline="lowess",
+                color_discrete_sequence=[primary_color]
             )
 
             st.plotly_chart(fig, use_container_width=True)
             st.dataframe(df_filtrado)
+            if st.button("Entrenar modelo de predicción"):
+                st.info("Aquí irá el entrenamiento del modelo de predicción.")
