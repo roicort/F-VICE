@@ -3,7 +3,7 @@ from streamlit_folium import st_folium
 import folium
 import pandas as pd
 import plotly.express as px
-from utils import get_itslive
+from utils import get_itslive, get_processed_data
 import json
 
 st.set_page_config(layout="wide")
@@ -137,36 +137,21 @@ min_dt, max_dt = st.slider(
 if st.session_state.coords and st.button("Graficar serie de tiempo"):
     with st.spinner("Descargando y graficando datos..."):
         df = get_itslive([st.session_state.coords])
-        df = df.dropna(subset=["v"]) 
+        df = get_processed_data(df, min_dt=min_dt, max_dt=max_dt)
     if df.empty:
-        st.warning("No se encontraron datos para la coordenada seleccionada.")
+        st.error("No se encontraron datos para las coordenadas seleccionadas.")
     else:
-        df["mid_date"] = pd.to_datetime(df["mid_date"])
+        fig = px.scatter(
+            df,
+            x="mid_date",
+            y="v",
+            labels={"v": "Velocidad (m/año)", "mid_date": "Fecha"},
+            title=f"Serie de tiempo de velocidad ITS_LIVE ({min_dt}-{max_dt} días)",
+            trendline="lowess",
+            color_discrete_sequence=[primary_color]
+        )
 
-        # Convertir date_dt a días (si es timedelta)
-        if pd.api.types.is_timedelta64_dtype(df["date_dt"]):
-            df["dias"] = df["date_dt"].dt.total_seconds() / 86400
-        else:
-            df["dias"] = df["date_dt"]
-
-        # Filtrar por intervalo de días
-        df_filtrado = df[(df["dias"] >= min_dt) & (df["dias"] <= max_dt)]
-        df_filtrado = df_filtrado.sort_values("mid_date")
-        if df_filtrado.empty:
-            st.warning("No hay datos en el intervalo seleccionado.")
-        else:
-            # Gráfico de puntos
-            fig = px.scatter(
-                df_filtrado,
-                x="mid_date",
-                y="v",
-                labels={"v": "Velocidad (m/año)", "mid_date": "Fecha"},
-                title=f"Serie de tiempo de velocidad ITS_LIVE ({min_dt}-{max_dt} días)",
-                trendline="lowess",
-                color_discrete_sequence=[primary_color]
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-            st.dataframe(df_filtrado)
-            if st.button("Entrenar modelo de predicción"):
-                st.info("Aquí irá el entrenamiento del modelo de predicción.")
+        st.plotly_chart(fig, use_container_width=True)
+        st.dataframe(df)
+        if st.button("Entrenar modelo de predicción"):
+            st.info("Aquí irá el entrenamiento del modelo de predicción.")
