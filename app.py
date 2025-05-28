@@ -138,14 +138,14 @@ if st.session_state.coords:
     if st.button("Graficar serie de tiempo"):
         with st.spinner("Descargando y graficando datos..."):
             df = get_itslive([st.session_state.coords])
-            df = get_processed_data(df, min_dt=min_dt, max_dt=max_dt)
-            st.session_state.df = df  # Guarda el DataFrame en el estado de sesión
+            glacier = get_processed_data(df, min_dt=min_dt, max_dt=max_dt)
+            st.session_state.glacier = glacier  # Guarda el DataFrame en el estado de sesión
     # Mostrar la gráfica y la tabla si ya hay datos en el estado de sesión
-    if "df" in st.session_state and not st.session_state.df.empty:
-        df = st.session_state.df
+    if "glacier" in st.session_state and not st.session_state.glacier.empty:
+        glacier = st.session_state.glacier
         fig = px.scatter(
-            df,
-            x="mid_date",
+            glacier,
+            x=glacier.index,
             y="v",
             labels={"v": "Velocidad (m/año)", "mid_date": "Fecha"},
             title=f"Serie de tiempo de velocidad ITS_LIVE ({min_dt}-{max_dt} días)",
@@ -153,7 +153,7 @@ if st.session_state.coords:
             color_discrete_sequence=[primary_color]
         )
         st.plotly_chart(fig, use_container_width=True)
-        st.dataframe(df)
+        st.dataframe(glacier)
 
         # Selector de modelo
         modelo_sel = st.selectbox(
@@ -164,24 +164,24 @@ if st.session_state.coords:
 
         # Botón para entrenar el modelo
         if st.button("Entrenar modelo de predicción"):
-            split_idx = int(len(df) * 0.50)
-            X = df[['mid_date','year', 'month', 'dayofyear']]
-            y = df['v']
+
+            split_idx = int(len(glacier) * 0.66)
+            X = glacier[['year', 'month', 'dayofyear']]
+            y = glacier['v']
             X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
             y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
 
-            st.session_state.plot_df = pd.DataFrame({
-                'date': pd.concat([X_train['mid_date'], X_test['mid_date']]),
+            plot_df = pd.DataFrame({
                 'v [m/yr]': pd.concat([y_train, y_test]),
                 'split': ['train'] * len(X_train) + ['test'] * len(X_test)
             })
 
             fig = px.scatter(
-                st.session_state.plot_df,
-                x='date',
+                plot_df,
+                x=plot_df.index,
                 y='v [m/yr]',
                 color='split',
-                title=f'Train/Test Split: v [m/yr] over Time ({modelo_sel})',
+                title='Train/Test Split: v [m/yr] over Time',
                 opacity=0.7,
                 trendline='lowess',
             )
@@ -198,26 +198,15 @@ if st.session_state.coords:
             # Una vez entrenado el modelo, puedes hacer predicciones
             if st.session_state.model:
                 with st.spinner("Realizando predicciones..."):
-                    preds = st.session_state.model.predict(X_test[['year', 'month', 'dayofyear']])
-                    st.session_state.preds = pd.DataFrame({
-                        'date': X_test['mid_date'],
-                        'v_pred [m/yr]': preds,
-                    })
-                    st.success("Predicciones realizadas exitosamente.")
 
-                    future_dates = get_future_dates(X_test['mid_date'].iloc[-1], until='2030-12-31')
+                    y_pred = st.session_state.model.predict(X_test)
+                    future_dates = get_future_dates(X_test.index[-1], until='2030-12-31')
                     future_predictions = model.predict(future_dates[['year', 'month', 'dayofyear']])
-
-                    # Crear DataFrame para las predicciones
-                    pred_df = pd.DataFrame({
-                        'date': future_dates['mid_date'],
-                        'v_pred [m/yr]': future_predictions,
-                    })
 
                     # Graficar puntos reales y predicciones
                     fig = px.scatter(
-                        st.session_state.plot_df,
-                        x='date',
+                        plot_df,
+                        x=plot_df.index,
                         y='v [m/yr]',
                         color='split',
                         title='Train/Test Split & Predictions: v [m/yr] over Time',
@@ -227,8 +216,8 @@ if st.session_state.coords:
 
                     # Agregar las predicciones como línea
                     fig.add_scatter(
-                        x=st.session_state.preds['date'],
-                        y=st.session_state.preds['v_pred [m/yr]'],
+                        x=y_test.index,
+                        y=y_pred,
                         mode='lines',
                         name='Predicción (test)',
                         line=dict(color="#4e59f6", width=2),
@@ -236,7 +225,7 @@ if st.session_state.coords:
 
                     # Agregar las predicciones futuras
                     fig.add_scatter(
-                        x=future_dates['mid_date'],
+                        x=future_dates.index,
                         y=future_predictions,
                         mode='lines',
                         name='Predicción (futuro)',
