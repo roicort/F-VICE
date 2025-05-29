@@ -43,9 +43,9 @@ class DenseLSTM(nn.Module):
         if self.dense:
             out = self.linear(out)
             out = self.act2(out)
-        out = self.final(out)
-        out = out.squeeze(1) 
-        out = out.squeeze(-1) 
+        out = self.final(out) # (batch, seq_len=1, 1)
+        out = out[:, -1, :] # (batch, 1, hidden) -> (batch, hidden)
+        out = out.squeeze(-1)  # (batch, hidden) -> (batch,)
         return out
 
     def fit(
@@ -86,3 +86,18 @@ class DenseLSTM(nn.Module):
                     "test_loss": np.mean(test_epoch_loss),
                     "time": end - start
                 })
+    
+    def predict(self, dataloader, device):
+        self.eval()
+        predictions = []
+        with torch.no_grad():
+            for step, batch in enumerate(dataloader):
+                batch = tuple(t.to(device) for t in batch)
+                # Soporta batches con o sin labels
+                if len(batch) == 2:
+                    inputs, _ = batch
+                else:
+                    inputs = batch[0]
+                out = self(inputs)
+                predictions.append(out.float().detach().cpu().numpy())
+        return np.concatenate(predictions, axis=0)
