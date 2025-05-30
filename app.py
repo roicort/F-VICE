@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_folium import st_folium
 import folium
 import pandas as pd
+import numpy as np
 import plotly.express as px
 from utils import get_itslive, get_processed_data, get_future_dates
 import json
@@ -158,7 +159,7 @@ if st.session_state.coords:
         # Selector de modelo
         modelo_sel = st.selectbox(
             "Selecciona el modelo de predicción:",
-            options=["XGBoost"],
+            options=["XGBoost","Regresor","ARIMA"],
             key="modelo_sel"
         )
 
@@ -194,6 +195,24 @@ if st.session_state.coords:
                         st.session_state.model = model
                         st.success(f"Modelo {modelo_sel} entrenado exitosamente.")
                         st.write(f"Cross-validated neg_mean_squared_log_error: {-scores.mean():.4f} ± {scores.std():.4f}")
+
+            elif modelo_sel == "Regresor":
+                with st.spinner("Entrenando modelo GBR..."):
+                        from gbregresor_model import get_gbr_model
+                        model, scores = get_gbr_model(X_train,y_train)
+                        st.session_state.model = model
+                        st.success(f"Modelo {modelo_sel} entrenado exitosamente.")
+                        st.write(f"Cross-validated neg_mean_squared_log_error: {-scores.mean():.4f} ± {scores.std():.4f}")
+
+            elif modelo_sel=="ARIMA":
+                with st.spinner("Entrenando modelo ARIMA"):
+                        from arima_model import get_arima_model
+                        model, scores = get_arima_model(X_train,y_train)
+                        st.session_state.model=model
+                        st.success(f"Modelo {modelo_sel} entrenado exitosamente,")
+                        st.write(f"Cross-validated neg_mean_squared_log_error: {-scores.mean():.4f} ± {scores.std():.4f}")
+
+
 
             # Una vez entrenado el modelo, puedes hacer predicciones
             if st.session_state.model:

@@ -3,7 +3,7 @@ name = "proyecto-final"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12" 
 dependencies = [
     "folium>=0.19.6",
     "ipykernel>=6.29.5",
@@ -26,5 +26,5 @@ dependencies = [
     "watchdog>=6.0.0",
     "xarray>=2025.4.0",
     "xgboost>=3.0.1",
-    "zarr>=3.0.8",
+    "zarr>=3.0.8"
 ]
