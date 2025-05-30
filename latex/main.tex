@@ -45,6 +45,7 @@
 %%
 %%
 \documentclass[sigconf,authordraft,language=spanish]{acmart}
+%\documentclass[sigconf,language=spanish]{acmart}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -61,16 +62,14 @@
 \acmYear{2025}
 \acmDOI{XXXXXXX.XXXXXXX}
 %% These commands are for a PROCEEDINGS abstract or paper.
-\acmConference[Conference acronym 'XX]{Make sure to enter the correct
-  conference title from your rights confirmation email}{June 03--05,
-  2018}{Woodstock, NY}
+\acmConference[PCIC: ML '25]{Aprendizaje de Máquina}{2025-II}{Ciudad de México, México}
 %%
 %%  Uncomment \acmBooktitle if the title of the proceedings is different
 %%  from ``Proceedings of ...''!
 %%
 %%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection,
 %%  June 03--05, 2018, Woodstock, NY}
-\acmISBN{978-1-4503-XXXX-X/2018/06}
+\acmISBN{978-1-4503-XXXX-X/2025/06}
 
 
 %%
@@ -125,7 +124,7 @@
 \author{Rodrigo S. Cortez Madrigal}
 \authornote{Both authors contributed equally to this research.}
 \email{rcortez@enesmorelia.unam.mx}
-\orcid{1234-5678-9012}
+\orcid{0000-0003-4600-9644}
 \authornotemark[1]
 %\email{webmaster@marysville-ohio.com}
 \affiliation{%
@@ -154,7 +153,7 @@
 %% other information printed in the page headers. This command allows
 %% the author to define a more concise list
 %% of authors' names for this purpose.
-\renewcommand{\shortauthors}{Trovato et al.}
+%\renewcommand{\shortauthors}{Trovato et al.}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
@@ -315,6 +314,21 @@ Los modelos se entrenaron utilizando el conjunto de entrenamiento y se evaluaron
 \subsection{LSTM}
 \subsection{Comparación de Resultados}
 
+\begin{table}
+  \caption{Frequency of Special Characters}
+  \label{tab:freq}
+  \begin{tabular}{ccl}
+    \toprule
+    Modelo&MSE&Parámetros\\
+    \midrule
+    LSTM & 1 in 1,000& For Swedish names\\
+    ARIMA & 1 in 5& Common in math\\
+    OLS & 4 in 5 & Used in business\\
+    XGB & 1 in 40,000& Unexplained usage\\
+  \bottomrule
+\end{tabular}
+\end{table}
+
 \section{Conclusiones}
 
 En este trabajo, hemos propuesto un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares.
@@ -328,7 +342,8 @@ Los resultados obtenidos muestran que los modelos de aprendizaje automático pue
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
 \begin{acks}
-To Robert, for the bagels and explaining CMYK and color spaces.
+Agradecemos a la clase de la Maestría en Ciencias e Ingenierías de la Computación de la UNAM por su apoyo y orientación en este trabajo.
+Agradecemos al Jet Propulsion Laboratory de la NASA por proporcionar el conjunto de datos del proyecto $ITSLIVE$.
 \end{acks}
 
 %%
