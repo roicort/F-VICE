@@ -22,16 +22,12 @@ dependencies = [
     "watchdog>=6.0.0",
     "xarray>=2025.4.0",
     "xgboost>=3.0.1",
-<<<<<<< HEAD
-    "zarr>=3.0.8"
-=======
     "zarr>=3.0.8",
     "pyproj>=3.7.1",
     "s3fs>=2025.5.1",
     "shapely>=2.1.1",
     "torch>=2.7.0",
     "tqdm>=4.67.1",
->>>>>>> e56d0feff378da3370026594f89d73f2bae039af
 ]
 
 [tool.uv.sources]

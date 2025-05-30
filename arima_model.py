@@ -11,9 +11,28 @@ class SklearnLikeARIMA:
         self.fitted_model = None
         self.fitted = False
         self.train_index = None
+    
+    def _reconstruct_dates(self, X):
+        if isinstance(X, pd.DataFrame):
+            if 'mid_date' in X.columns:
+                return pd.to_datetime(X['mid_date'])
+            elif all(col in X.columns for col in ['year', 'month', 'day']):
+                return pd.to_datetime(dict(
+                    year=X['year'],
+                    month=X['month'],
+                    day=X['day']
+                ), errors='coerce')
+            elif all(col in X.columns for col in ['year', 'dayofyear']):
+                return pd.to_datetime(X['year'] * 1000 + X['dayofyear'], format='%Y%j', errors='coerce')
+            else:
+                # Fallback: fechas equiespaciadas a partir del último punto de entrenamiento
+                return pd.date_range(start=self.train_index[-1], periods=len(X) + 1, freq='MS')[1:]
+        else:
+            return pd.date_range(start=self.train_index[-1], periods=len(X) + 1, freq='MS')[1:]
+
 
     def fit(self, X, y):
-        fechas = pd.to_datetime(X['mid_date'])
+        fechas = self._reconstruct_dates(X)
         series = pd.Series(y.values, index=fechas).sort_index()
 
         self.model = ARIMA(series, order=self.order)
@@ -29,29 +48,11 @@ class SklearnLikeARIMA:
         n_steps = len(X)
         pred = self.fitted_model.forecast(steps=n_steps)
 
-        # Intentar construir fechas para las predicciones
-        if isinstance(X, pd.DataFrame):
-            if 'mid_date' in X.columns:
-                fechas_pred = pd.to_datetime(X['mid_date'])
-            elif all(c in X.columns for c in ['year', 'month', 'dayofyear']):
-                fechas_pred = pd.to_datetime({
-                    'year': X['year'],
-                    'month': X['month'],
-                    # Aproxima el día como primero del mes por compatibilidad
-                    'day': 1
-                }, errors='coerce')
-            else:
-                fechas_pred = pd.date_range(
-                    start=self.train_index[-1], periods=n_steps + 1, freq='MS'
-                )[1:]
-        else:
-            fechas_pred = pd.date_range(
-                start=self.train_index[-1], periods=n_steps + 1, freq='MS'
-            )[1:]
-
+        fechas_pred = self._reconstruct_dates(X)
         pred.index = fechas_pred
         return pred.values
 
+        
 def get_arima_model(X_train, y_train):
     model = SklearnLikeARIMA(order=(5, 1, 0))
     model.fit(X_train, y_train)
