@@ -1,0 +1,347 @@
+%%
+%% This is file `sample-sigconf-authordraft.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `all,proceedings,bibtex,authordraft')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf-authordraft.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%% The first command in your LaTeX source must be the \documentclass
+%% command.
+%%
+%% For submission and review of your manuscript please change the
+%% command to \documentclass[manuscript, screen, review]{acmart}.
+%%
+%% When submitting camera ready or to TAPS, please change the command
+%% to \documentclass[sigconf]{acmart} or whichever template is required
+%% for your publication.
+%%
+%%
+\documentclass[sigconf,authordraft,language=spanish]{acmart}
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmlicensed}
+\copyrightyear{2025}
+\acmYear{2025}
+\acmDOI{XXXXXXX.XXXXXXX}
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[Conference acronym 'XX]{Make sure to enter the correct
+  conference title from your rights confirmation email}{June 03--05,
+  2018}{Woodstock, NY}
+%%
+%%  Uncomment \acmBooktitle if the title of the proceedings is different
+%%  from ``Proceedings of ...''!
+%%
+%%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection,
+%%  June 03--05, 2018, Woodstock, NY}
+\acmISBN{978-1-4503-XXXX-X/2018/06}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+%%\acmSubmissionID{123-A56-BU3}
+
+%%
+%% For managing citations, it is recommended to use bibliography
+%% files in BibTeX format.
+%%
+%% You can then either use BibTeX with the ACM-Reference-Format style,
+%% or BibLaTeX with the acmnumeric or acmauthoryear sytles, that include
+%% support for advanced citation of software artefact from the
+%% biblatex-software package, also separately available on CTAN.
+%%
+%% Look at the sample-*-biblatex.tex files for templates showcasing
+%% the biblatex styles.
+%%
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+%%\citestyle{acmauthoryear}
+
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{F-VICE: Forecasting Velocity of Ice in Glaciers Using
+  Machine Learning}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+\author{Rodrigo S. Cortez Madrigal}
+\authornote{Both authors contributed equally to this research.}
+\email{rcortez@enesmorelia.unam.mx}
+\orcid{1234-5678-9012}
+\authornotemark[1]
+%\email{webmaster@marysville-ohio.com}
+\affiliation{%
+  \institution{PCIC}
+  \city{CDMX}
+  %\state{Ohio}
+  \country{México}
+}
+
+\author{Luis V. Ruiz Hernández}
+\authornote{Both authors contributed equally to this research.}
+\email{lruiz@ciencias.unam.mx}
+\orcid{1234-5678-9012}
+\authornotemark[1]
+%\email{webmaster@marysville-ohio.com}
+\affiliation{%
+  \institution{PCIC}
+  \city{CDMX}
+  %\state{Ohio}
+  \country{México}
+}
+
+%%
+%% By default, the full list of authors will be used in the page
+%% headers. Often, this list is too long, and will overlap
+%% other information printed in the page headers. This command allows
+%% the author to define a more concise list
+%% of authors' names for this purpose.
+\renewcommand{\shortauthors}{Trovato et al.}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+  El deshielo de los glaciares es un fenómeno natural
+  que ha aumentado en las últimas décadas debido al cambio climático.
+  Este proceso tiene un impacto significativo en el nivel del mar y en los ecosistemas locales.  
+  En este trabajo, proponemos un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares. 
+  Utilizamos un conjunto de datos del proyecto $ITSLIVE$ (Time Series of Land Ice Velocity and Elevation) del Jet Propulsion Laboratory de la NASA, que a partir de imágenes satelitales, proporciona información sobre la velocidad de deshielo de los glaciares.
+  Finalmente comparamos los resultados de distintos modelos de aprendizaje automático y discutimos los resultados obtenidos.
+\end{abstract}
+
+%%
+%% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
+%% Please copy and paste the code instead of the example below.
+%%
+\begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>00000000.0000000.0000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>00000000.00000000.00000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>00000000.00000000.00000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>100</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>00000000.00000000.00000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>100</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+\ccsdesc[300]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+\ccsdesc{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+\ccsdesc[100]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\keywords{Do, Not, Us, This, Code, Put, the, Correct, Terms, for,
+  Your, Paper}
+%% A "teaser" image appears between the author and affiliation
+%% information and the body of the document, and typically spans the
+%% page.
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{sampleteaser}
+  \caption{Seattle Mariners at Spring Training, 2010.}
+  \Description{Enjoying the baseball game from the third-base
+  seats. Ichiro Suzuki preparing to bat.}
+  \label{fig:teaser}
+\end{teaserfigure}
+
+\received{20 February 2007}
+\received[revised]{12 March 2009}
+\received[accepted]{5 June 2009}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+\section{Introduction}
+
+La predicción de series de tiempo es una tarea importante en el
+ámbito del aprendizaje automático y la ciencia de datos. Desde la
+predicción de precios de acciones hasta la predicción del clima, las
+series de tiempo son una herramienta valiosa para la toma de decisiones
+y la planificación. No obstante, el estudio de series de tiempo en el contexto de los glaciares es un tema menos explorado.
+
+El deshielo de los glaciares es un fenómeno natural que ha aumentado en las últimas décadas debido al cambio climático.
+Este proceso tiene un impacto significativo en el nivel del mar y en los ecosistemas locales.
+Por lo tanto, es crucial comprender y predecir la velocidad de deshielo de los glaciares para mitigar sus efectos negativos.
+En este contexto, la modelación de series de tiempo se convierte en una herramienta esencial para predecir la velocidad de deshielo de los glaciares.
+No obstante, para comprender plenamente cómo responden los glaciares al cambio medioambiental 
+se necesitarán nuevos métodos que nos ayuden a identificar el inicio de los fenómenos de aceleración del hielo y a observar cómo se propagan las señales dinámicas dentro de los glaciares \cite{greene_detecting_2020}.
+
+En ese sentido, la velocidad de los glaciares es un parámetro importante que nos permite comprender
+el comportamiento dinámico de los glaciares y su respuesta al cambio climático \cite{zhang_validation_2024}.
+Estudiar la velocidad de los glaciares es crucial para comprender cómo responden al cambio climático y cómo afectan al nivel del mar.
+
+En este trabajo, proponemos un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares.
+Utilizamos un conjunto de datos del proyecto $ITSLIVE$ (Time Series of Land Ice Velocity and Elevation) del Jet Propulsion Laboratory de la NASA, que a partir de imágenes satelitales, proporciona información sobre la velocidad de deshielo de los glaciares.
+Compararemos los resultados de distintos modelos de aprendizaje automático y discutiremos los resultados obtenidos.
+
+\section{Antecedentes}
+
+Durante la última década, el número de observaciones por satélite disponibles ha aumentado considerablemente, 
+lo que ha permitido realizar mediciones mucho más frecuentes de la velocidad de los glaciares.
+Proyectos como el de Intermission Time Series of Land Ice Velocity and Elevation ($ITS_LIVE$) de la NASA 
+aceleran la comprensión de los procesos críticos de los glaciares y las capas de hielo proporcionando a la comunidad científica registros globales, 
+de baja latencia, exhaustivos y de última generación de las velocidades y elevaciones de la superficie observadas desde el espacio \cite{lei_processing_2021} .
+
+Estos datos por lo tanto permiten a través de la modelación de series de tiempo,
+predecir la velocidad de los glaciares y su evolución en el tiempo. 
+
+Trabajos como el de derkacheva \cite{derkacheva_data_2020} han utilizado métodos como Lowess para el estudio de estas series de tiempo, mientras que anteriormente 
+ya se habían utlizado modelos de regresión lineal y modelos ARIMA para la predicción de series de tiempo \cite{noauthor_time_2022} sobre otros conjuntos de datos no ITSLIVE.
+
+\section{Metodología}
+
+Para la predicción de la velocidad de los glaciares, utilizamos el conjunto de datos del proyecto $ITSLIVE$ de la NASA.
+Este conjunto de datos contiene información sobre la velocidad de deshielo de los glaciares a partir de imágenes satelitales.
+
+Cada observación de velocidad de deshielo de los glaciares se registra en un intervalo de tiempo específico, lo que nos permite construir una serie de tiempo.
+Para la modelación de series de tiempo, utilizamos distintos modelos de aprendizaje automático, incluyendo modelos de regresión lineal, modelos ARIMA y redes neuronales recurrentes (RNN).
+
+\subsection{Línea Base}
+
+Para establecer una línea base para la predicción de la velocidad de los glaciares, utilizamos un modelo de regresión lineal simple.
+Este modelo se basa en la suposición de que la velocidad de deshielo de los glaciares sigue una tendencia lineal a lo largo del tiempo.
+El modelo de regresión lineal se ajusta a los datos de velocidad de deshielo de los glaciares y se utiliza para predecir la velocidad futura.
+
+\subsection{ARIMA}
+
+El modelo ARIMA (Autoregressive Integrated Moving Average) es un modelo de series de tiempo que combina componentes autorregresivos, de media móvil e integración.
+El modelo ARIMA se utiliza para modelar series de tiempo estacionarias y no estacionarias.
+Para aplicar el modelo ARIMA a la serie de tiempo de la velocidad de deshielo de los glaciares, primero es necesario transformar la serie de tiempo en una serie estacionaria.
+Para ello, se aplican técnicas de diferenciación y transformación de Box-Cox.
+
+\subsection{XGBoost}
+
+XGBoost (Extreme Gradient Boosting) es un algoritmo de aprendizaje automático basado en árboles de decisión que se ha utilizado con éxito en diversas tareas de predicción.
+XGBoost es un algoritmo de boosting que combina múltiples árboles de decisión para mejorar la precisión de las predicciones.
+Se ha utilizado en diversas aplicaciones, incluida la predicción de series de tiempo.
+
+\subsection{LSTM}
+
+Las redes neuronales recurrentes (RNN) son un tipo de modelo de aprendizaje automático que se utiliza para procesar datos secuenciales, como series de tiempo.
+Las RNN son capaces de capturar patrones temporales en los datos y se han utilizado con éxito en diversas aplicaciones, incluida la predicción de series de tiempo.
+En este trabajo, utilizamos una variante de las RNN llamada LSTM (Long Short-Term Memory), que es especialmente eficaz para modelar dependencias a largo plazo en los datos.
+
+\subsection{Compración de Resultados}
+Para comparar los resultados de los distintos modelos de aprendizaje automático, utilizamos métricas de evaluación como el error cuadrático medio (MSE).
+Los resultados se presentan en forma de gráficos que muestran la predicción de la velocidad de deshielo de los glaciares a lo largo del tiempo, junto con las observaciones reales.
+
+\section{Experimentos y Resultados}
+
+Para evaluar el rendimiento de los modelos de aprendizaje automático en la predicción de la velocidad de deshielo de los glaciares, realizamos una serie de experimentos utilizando el conjunto de datos del proyecto $ITSLIVE$.
+Los experimentos consistieron en entrenar y evaluar los modelos de regresión lineal, ARIMA, XGBoost y LSTM en la serie de tiempo de la velocidad de deshielo de los glaciares.
+
+El conjunto de datos se dividió en un conjunto de entrenamiento y un conjunto de prueba.
+Los modelos se entrenaron utilizando el conjunto de entrenamiento y se evaluaron en el conjunto de prueba.
+
+\subsection{Línea Base}
+\subsection{ARIMA}
+\subsection{XGBoost}
+\subsection{LSTM}
+\subsection{Comparación de Resultados}
+
+\section{Conclusiones}
+
+En este trabajo, hemos propuesto un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares.
+Encontramos que los modelos de aprendizaje automático, son herramientas valiosas para la predicción de series de tiempo en el contexto de los glaciares.
+Los resultados obtenidos muestran que los modelos de aprendizaje automático pueden capturar patrones temporales en la velocidad de deshielo de los glaciares y proporcionar predicciones precisas.
+
+\section{Appendices}
+%%
+%% The acknowledgments section is defined using the "acks" environment
+%% (and NOT an unnumbered section). This ensures the proper
+%% identification of the section in the article metadata, and the
+%% consistent spelling of the heading.
+\begin{acks}
+To Robert, for the bagels and explaining CMYK and color spaces.
+\end{acks}
+
+%%
+%% The next two lines define the bibliography style to be used, and
+%% the bibliography file.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{sample-base}
+
+%%
+%% If your work has an appendix, this is the place to put it.
+\appendix
+
+\end{document}
+\endinput
+%%
+%% End of file `sample-sigconf-authordraft.tex'.
