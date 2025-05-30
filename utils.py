@@ -24,8 +24,7 @@ def get_processed_data(df, min_dt=1, max_dt=120):
         raise ValueError("DataFrame is empty. No data to process.")
     
     df = df.dropna(subset=["v"]).copy()
-    df["mid_date"] = pd.to_datetime(df["mid_date"], utc=True)
-
+    df.index = pd.to_datetime(df["mid_date"], utc=True)
     min_dt = pd.Timedelta(days=min_dt)
     max_dt = pd.Timedelta(days=max_dt)
     df = df[(df["date_dt"] >= min_dt) & (df["date_dt"] <= max_dt)].copy()
@@ -35,7 +34,10 @@ def get_processed_data(df, min_dt=1, max_dt=120):
     df["month"] = df["mid_date"].dt.month
     df["dayofyear"] = df["mid_date"].dt.dayofyear
 
-    return df.sort_values(by="mid_date").reset_index(drop=True)
+    df.drop(columns=["mid_date"], inplace=True, errors='ignore')
+    df.sort_index(inplace=True)
+
+    return df
 
 def get_future_dates(start, until='2030-12-31'):
     start_date = (start + pd.Timedelta(days=1))
@@ -43,8 +45,11 @@ def get_future_dates(start, until='2030-12-31'):
 
     future_dates = pd.DataFrame(pd.date_range(start=start_date, end=end_date, freq='D'))
     future_dates.columns = ['mid_date']
+    future_dates.index = future_dates['mid_date']
     future_dates['year'] = future_dates['mid_date'].dt.year
     future_dates['month'] = future_dates['mid_date'].dt.month
     future_dates['dayofyear'] = future_dates['mid_date'].dt.dayofyear
+    future_dates.drop(columns=['mid_date'], inplace=True, errors='ignore')
+    future_dates.sort_index(inplace=True)
 
-    return future_dates[['mid_date', 'year', 'month', 'dayofyear']].reset_index(drop=True)
+    return future_dates
