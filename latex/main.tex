@@ -236,7 +236,7 @@ y la planificación. No obstante, el estudio de series de tiempo en el contexto 
 
 El deshielo de los glaciares es un fenómeno natural que ha aumentado en las últimas décadas debido al cambio climático.
 Este proceso tiene un impacto significativo en el nivel del mar y en los ecosistemas locales.
-Por lo tanto, es crucial comprender y predecir la velocidad de deshielo de los glaciares para mitigar sus efectos negativos.
+Por lo tanto, es crucial comprender, analizar y predecir la velocidad de deshielo de los glaciares para mitigar sus efectos negativos.
 En este contexto, la modelación de series de tiempo se convierte en una herramienta esencial para predecir la velocidad de deshielo de los glaciares.
 No obstante, para comprender plenamente cómo responden los glaciares al cambio medioambiental 
 se necesitarán nuevos métodos que nos ayuden a identificar el inicio de los fenómenos de aceleración del hielo y a observar cómo se propagan las señales dinámicas dentro de los glaciares \cite{greene_detecting_2020}.
@@ -271,18 +271,53 @@ Este conjunto de datos contiene información sobre la velocidad de deshielo de l
 Cada observación de velocidad de deshielo de los glaciares se registra en un intervalo de tiempo específico, lo que nos permite construir una serie de tiempo.
 Para la modelación de series de tiempo, utilizamos distintos modelos de aprendizaje automático, incluyendo modelos de regresión lineal, modelos ARIMA y redes neuronales recurrentes (RNN).
 
+El conjunto de datos incluye $9$ glaciares y cada uno de estos tiene asociado a un DataFrame con las siguientes variables:
+
+\begin{itemize}
+    \item \verb|mid_date|: Fecha media entre las dos imágenes usadas para calcular la velocidad.
+    \item \verb|v|: (Variable respuesta) Velocidad total de flujo (magnitud vectorial de vx y vy).
+    \item \verb|v_error|:	Error estimado en la velocidad total v.
+    \item \verb|vx|:	Componente de velocidad en el eje X (este-oeste).
+    \item \verb|vx_error|:	Error en la componente de velocidad vx.
+    \item \verb|vy|:	Componente de velocidad en el eje Y (norte-sur).
+    \item \verb|vy_error|:	Error en la componente de velocidad vy.
+    \item \verb|date_dt|:	Fecha de adquisición como objeto datetime completo.
+    \item \verb|satellite_img1|:	Nombre o código del primer satélite usado para la imagen base.
+    \item \verb|mission_img1|:	Misión satelital de la primera imagen.
+    \item \verb|x|:	Coordenada X en proyección UTM u otra proyección local (EPSG específica).
+    \item \verb|y|:	Coordenada Y en proyección UTM u otra.
+    \item \verb|lat|:	Latitud geográfica del píxel o punto.
+    \item \verb|lon|:	Longitud geográfica del píxel o punto.
+    \item \verb|year|:	Año de la observación (extraído de $mid\_date$).
+    \item \verb|month|:	Mes de la observación (extraído de $mid\_date$).
+    \item \verb|dayofyear|:	Día del año ($1$ a $366$).
+
+\end{itemize}
+
 \subsection{Línea Base}
 
 Para establecer una línea base para la predicción de la velocidad de los glaciares, utilizamos un modelo de regresión lineal simple.
 Este modelo se basa en la suposición de que la velocidad de deshielo de los glaciares sigue una tendencia lineal a lo largo del tiempo.
 El modelo de regresión lineal se ajusta a los datos de velocidad de deshielo de los glaciares y se utiliza para predecir la velocidad futura.
 
+Además de su simplicidad, la regresión lineal permite interpretar fácilmente la relación entre el tiempo y la velocidad del glaciar mediante sus coeficientes. 
+El término de pendiente indica si la velocidad de flujo del glaciar está aumentando o disminuyendo con el tiempo, lo que puede ser un indicio
+ de aceleración del deshielo por efectos climáticos. Aunque este modelo no captura patrones estacionales ni fluctuaciones no lineales, sirve como un punto 
+ de comparación robusto frente a modelos más complejos como XGBoost o ARIMA, y permite establecer una primera hipótesis sobre la evolución
+  temporal del comportamiento glaciar.
+
 \subsection{ARIMA}
 
 El modelo ARIMA (Autoregressive Integrated Moving Average) es un modelo de series de tiempo que combina componentes autorregresivos, de media móvil e integración.
 El modelo ARIMA se utiliza para modelar series de tiempo estacionarias y no estacionarias.
 Para aplicar el modelo ARIMA a la serie de tiempo de la velocidad de deshielo de los glaciares, primero es necesario transformar la serie de tiempo en una serie estacionaria.
-Para ello, se aplican técnicas de diferenciación y transformación de Box-Cox.
+Para ello, se aplican técnicas de diferenciación.
+
+Una vez que se logra la estacionariedad mediante la diferenciación, el modelo ARIMA puede identificar y capturar patrones temporales en la serie, como la dependencia 
+entre observaciones pasadas (componente autorregresiva, AR) y los errores de predicción previos (componente de media móvil, MA). En nuestro caso, se ajustó un modelo ARIMA a 
+la serie temporal de velocidades de deshielo utilizando la fecha como índice temporal.
+
+
 
 \subsection{XGBoost}
 
@@ -290,11 +325,22 @@ XGBoost (Extreme Gradient Boosting) es un algoritmo de aprendizaje automático b
 XGBoost es un algoritmo de boosting que combina múltiples árboles de decisión para mejorar la precisión de las predicciones.
 Se ha utilizado en diversas aplicaciones, incluida la predicción de series de tiempo.
 
+En el contexto de series de tiempo, aunque XGBoost no modela explícitamente la dependencia temporal como los modelos clásicos (por ejemplo, ARIMA), puede adaptarse para tareas de 
+predicción temporal al incorporar variables que representen el tiempo, como el año, mes, día del año o rezagos de la variable objetivo. Su capacidad para capturar relaciones no lineales
+ y manejar grandes volúmenes de datos lo convierte en una herramienta eficaz cuando se dispone de múltiples variables explicativas o características derivadas del tiempo. Además, XGBoost
+incluye mecanismos de regularización, lo que resulta útil cuando se trabaja con conjuntos de datos ruidosos.
+
+
 \subsection{LSTM}
 
 Las redes neuronales recurrentes (RNN) son un tipo de modelo de aprendizaje automático que se utiliza para procesar datos secuenciales, como series de tiempo.
 Las RNN son capaces de capturar patrones temporales en los datos y se han utilizado con éxito en diversas aplicaciones, incluida la predicción de series de tiempo.
 En este trabajo, utilizamos una variante de las RNN llamada LSTM (Long Short-Term Memory), que es especialmente eficaz para modelar dependencias a largo plazo en los datos.
+
+Las redes LSTM superan una de las principales limitaciones de las RNN tradicionales: el problema del desvanecimiento o explosión del gradiente durante el entrenamiento.
+ Gracias a su arquitectura con compuertas de entrada, olvido y salida, las LSTM pueden retener información relevante durante períodos más largos y descartar información 
+ irrelevante, lo que las hace particularmente adecuadas para modelar series de tiempo con comportamientos complejos o retardos significativos en sus patrones. En este proyecto,
+  el modelo LSTM se alimenta con secuencias históricas de velocidad del glaciar para realizar predicciones más precisas del comportamiento futuro.
 
 \subsection{Compración de Resultados}
 Para comparar los resultados de los distintos modelos de aprendizaje automático, utilizamos métricas de evaluación como el error cuadrático medio (MSE).
@@ -314,7 +360,7 @@ Los modelos se entrenaron utilizando el conjunto de entrenamiento y se evaluaron
 \subsection{LSTM}
 \subsection{Comparación de Resultados}
 
-\begin{table}
+\begin{table}[H]
   \caption{Frequency of Special Characters}
   \label{tab:freq}
   \begin{tabular}{ccl}
