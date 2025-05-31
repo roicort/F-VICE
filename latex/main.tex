@@ -271,6 +271,8 @@ Este conjunto de datos contiene información sobre la velocidad de deshielo de l
 Cada observación de velocidad de deshielo de los glaciares se registra en un intervalo de tiempo específico, lo que nos permite construir una serie de tiempo.
 Para la modelación de series de tiempo, utilizamos distintos modelos de aprendizaje automático, incluyendo modelos de regresión lineal, modelos ARIMA y redes neuronales recurrentes (RNN).
 
+\subsection{Conjunto de Datos}
+
 El conjunto de datos incluye $9$ glaciares y cada uno de estos tiene asociado a un DataFrame con las siguientes variables:
 
 \begin{itemize}
@@ -343,15 +345,32 @@ Las redes LSTM superan una de las principales limitaciones de las RNN tradiciona
   el modelo LSTM se alimenta con secuencias históricas de velocidad del glaciar para realizar predicciones más precisas del comportamiento futuro.
 
 \subsection{Compración de Resultados}
-Para comparar los resultados de los distintos modelos de aprendizaje automático, utilizamos métricas de evaluación como el error cuadrático medio (MSE).
-Los resultados se presentan en forma de gráficos que muestran la predicción de la velocidad de deshielo de los glaciares a lo largo del tiempo, junto con las observaciones reales.
+
+Para comparar los resultados de los distintos modelos de aprendizaje automático, utilizamos métricas de evaluación que 
+describiremos en la siguiente subsección.
+Además del desempeño de los modelos, también consideramos la interpretabilidad y la complejidad de cada modelo.
+Este análisis comparativo nos permitirá comparar sistemáticamente
+el desempeños de los modelos y discutir sus fortalezas y debilidades para este problema en específico.
+
+\subsubsection{Métricas}
+
+Para evaluar el rendimiento de los modelos de aprendizaje automático, utilizamos métricas de evaluación como el error cuadrático medio (MSE) y el coeficiente de determinación (R²).
+
+\begin{itemize}
+  \item El error cuadrático medio (MSE) es una métrica que mide la diferencia entre los valores predichos por el modelo y los valores reales de la variable objetivo.
+El MSE se calcula como la media de los cuadrados de las diferencias entre los valores predichos y los valores reales.
+Elegimos el MSE para este problema en específico porque en el contexto de la predicción de series de tiempo, es importante minimizar los errores grandes para obtener predicciones más precisas.
+  \item El coeficiente de determinación (R²) es una métrica que mide la proporción de la varianza de la variable objetivo que es explicada por el modelo.
+El R² se calcula como la proporción de la varianza de los valores predichos que es explicada por la varianza de los valores reales.
+Es útil porque nos permite evaluar la capacidad del modelo para explicar la variabilidad de los datos.
+\end{itemize}
 
 \section{Experimentos y Resultados}
 
-Para evaluar el rendimiento de los modelos de aprendizaje automático en la predicción de la velocidad de deshielo de los glaciares, realizamos una serie de experimentos utilizando el conjunto de datos del proyecto $ITSLIVE$.
-Los experimentos consistieron en entrenar y evaluar los modelos de regresión lineal, ARIMA, XGBoost y LSTM en la serie de tiempo de la velocidad de deshielo de los glaciares.
-
-El conjunto de datos se dividió en un conjunto de entrenamiento y un conjunto de prueba.
+Para evaluar el rendimiento de los modelos de aprendizaje automático, realizamos una serie de experimentos utilizando el conjunto de datos del proyecto $ITSLIVE$ de la NASA.
+Seleccionamos un subconjunto de glaciares importantes y obtuvimos las series de tiempo de la velocidad de deshielo de estos glaciares.
+El conjunto de datos se dividió en un conjunto de entrenamiento y un conjunto de prueba en un porcentaje de $70\%$ para entrenamiento y $30\%$ para prueba.
+Esto debido a que tenemos un mayor cantidad de datos en años reciente en contraste a los primeros años de observación, esto en gran medida debido a la disponibilidad de imágenes satelitales.  
 Los modelos se entrenaron utilizando el conjunto de entrenamiento y se evaluaron en el conjunto de prueba.
 
 \subsection{Línea Base}
