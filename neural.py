@@ -57,7 +57,9 @@ class DenseLSTM(nn.Module):
         optimizer,
         criterion,
         device,
-        epochs=10
+        epochs=10,
+        scheduled_sampling=False,
+        ss_prob=0.2,  # Probabilidad de usar la predicción como entrada
     ):
         with tqdm(range(epochs)) as pbar:
             for epoch in pbar:
@@ -67,8 +69,24 @@ class DenseLSTM(nn.Module):
                 for step, batch in enumerate(train_dataloader):
                     optimizer.zero_grad()
                     batch = tuple(t.to(device) for t in batch)
-                    inputs, labels = batch
-                    out = self(inputs)
+                    inputs, labels = batch  # inputs: (batch, seq_len, features)
+                    
+                    if scheduled_sampling:
+                        # Scheduled sampling solo para la variable target (última columna de features)
+                        inputs_ss = inputs.clone()
+                        for b in range(inputs.size(0)):
+                            for t in range(1, inputs.size(1)):
+                                if np.random.rand() < ss_prob:
+                                    # Reemplaza el lag correspondiente por la predicción previa
+                                    prev_input = inputs_ss[b, t-1].unsqueeze(0).unsqueeze(0)  # (1,1,features)
+                                    with torch.no_grad():
+                                        prev_pred = self(prev_input).detach()
+                                    # Suponiendo que la variable target está en la última columna
+                                    inputs_ss[b, t, -1] = prev_pred
+                        out = self(inputs_ss)
+                    else:
+                        out = self(inputs)
+                    
                     loss = criterion(out, labels)
                     epoch_loss.append(loss.float().detach().cpu().numpy().mean())
                     loss.backward()
