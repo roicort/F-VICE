@@ -36,16 +36,18 @@ class DenseLSTM(nn.Module):
             self.final = nn.Linear(self.hidden_dim, 1)
 
     def forward(self, inputs):
-        # inputs: (batch, features)
-        out = inputs.unsqueeze(1)  # (batch, seq_len=1, features)
-        out, _ = self.lstm(out)    # (batch, seq_len=1, hidden)
+        # inputs: (batch, seq_len, features)
+        out, _ = self.lstm(inputs)    # (batch, seq_len, hidden)
         out = self.act1(out)
         if self.dense:
             out = self.linear(out)
             out = self.act2(out)
-        out = self.final(out) # (batch, seq_len=1, 1)
-        out = out[:, -1, :] # (batch, 1, hidden) -> (batch, hidden)
-        out = out.squeeze(-1)  # (batch, hidden) -> (batch,)
+        out = self.final(out) # (batch, seq_len, 1) o (batch, 1)
+        if out.dim() == 3:
+            out = out[:, -1, :]   # (batch, 1, 1) -> (batch, 1)
+        elif out.dim() == 2:
+            out = out[:, -1]      # (batch, 1) -> (batch,)
+        out = out.squeeze(-1)     # (batch, 1) -> (batch,)
         return out
 
     def fit(
