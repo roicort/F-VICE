@@ -397,6 +397,46 @@ Dado que en la Fig. \ref{fig:frequencies} hay un pico claro cerca de la frecuenc
 Una serie temporal es estacionaria cuando sus propiedades estadísticas como la media, la varianza y la autocorrelación no cambian con el tiempo.
 Métodos como ARIMA y sus variantes funcionan bajo el supuesto de que la serie temporal que modelizan es estacionaria. Si la serie temporal no es estacionaria, estos métodos no funcionan muy bien.
 
+Utilizamos la prueba de Dickey-Fuller aumentada (ADF) y la prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS) para verificar la estacionariedad de nuestras series temporales.
+Encontramos que la mayoría de nuestras series temporales no son estacionarias, lo que significa que tienen una tendencia o una varianza que cambia con el tiempo.
+
+Lo que sugiere que modelos como ARIMA y sus variantes no funcionarán bien con nuestras series temporales sin una transformación previa.
+
+\paragraph{OLS}
+
+Para establecer una línea base, utilizamos un modelo de regresión lineal simple (OLS) para predecir la velocidad de los glaciares.
+
+Obtuvimos los siguientes resultados para el modelo OLS
+
+\begin{figure}[htbp]
+   \centering
+   \includesvg[width=0.5\textwidth]{svg-inkscape/Jakobshavn_OLS_forecasts.svg}
+    \caption{Predicciones del modelo OLS para el glaciar Jakobshavn.}
+    \label{fig:jakobshavn_ols}
+\end{figure}
+ 
+
+\begin{table}[H]
+  \caption{Resultados del modelo OLS}
+  \label{tab:ols}
+  \begin{tabular}{lc}
+    \toprule
+    Métrica & Valor \\
+    \midrule
+    MA & 1698.99 \\
+    MSE & 3\,468\,429.84 \\
+    RMSE & 1\,862.37 \\
+    $R^2$ & 0.400 \\
+    Adj. $R^2$ & 0.399 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+A pesar de que el modelo OLS tiene un $R^2$ de $0.4$, lo que indica que el modelo explica el $40\%$ de la varianza de los datos,
+los resultados no son muy buenos, ya que el RMSE es de $1862.37$, lo que indica que el modelo tiene un error cuadrático medio alto.
+Esperábamos que el modelo OLS no funcionara bien, ya que la serie temporal no es estacionaria y el modelo OLS no captura la estacionalidad de los datos.
+El modelo OLS sirve como una línea base para comparar los resultados de los otros modelos de aprendizaje automático.
+No obstante, podemos observar una tendencia creciente en la serie temporal, lo que indica que la velocidad de los glaciares está aumentando con el tiempo.
 
 \subsection{ARIMA}
 
@@ -419,6 +459,34 @@ a los datos del glaciar Alaska-Columbia Glacier
 Podemos observar 
 
 \subsection{XGBoost}
+
+Para el modelo XGBoost, tuvimos que utilizar características adicionales.
+Estas características incluyen el año, mes, día del año, lags, rolling windows y diferencias de la variable objetivo.
+
+\begin{table}[H]
+  \caption{Resultados del modelo XGBoost}
+  \label{tab:xgb}
+  \begin{tabular}{lc}
+    \toprule
+    Métrica & Valor \\
+    \midrule
+    MAE & 112.34 \\
+    MSE & 177600.20 \\
+    RMSE & 421.43 \\
+    $R^2$ & 0.9547 \\
+    Adj. $R^2$ & 0.9546 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+   \centering
+   \includesvg[width=0.5\textwidth]{svg-inkscape/Jakobshavn_XGB_forecasts.svg}
+    \caption{Predicciones del modelo XGBoost para el glaciar Jakobshavn.}
+    \label{fig:jakobshavn_xgb}
+\end{figure}
+
+
 \subsection{LSTM}
 \subsection{Comparación de Resultados}
 
