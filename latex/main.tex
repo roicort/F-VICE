@@ -44,6 +44,7 @@
 %% for your publication.
 %%
 %%
+
 \documentclass[sigconf,authordraft,language=spanish]{acmart}
 %\documentclass[sigconf,language=spanish]{acmart}
 %%
@@ -104,7 +105,7 @@
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
 
-
+\usepackage{svg}
 %%
 %% end of the preamble, start of the body of the document source.
 \begin{document}
@@ -319,8 +320,6 @@ Una vez que se logra la estacionariedad mediante la diferenciación, el modelo A
 entre observaciones pasadas (componente autorregresiva, AR) y los errores de predicción previos (componente de media móvil, MA). En nuestro caso, se ajustó un modelo ARIMA a 
 la serie temporal de velocidades de deshielo utilizando la fecha como índice temporal.
 
-
-
 \subsection{XGBoost}
 
 XGBoost (Extreme Gradient Boosting) es un algoritmo de aprendizaje automático basado en árboles de decisión que se ha utilizado con éxito en diversas tareas de predicción.
@@ -359,7 +358,9 @@ Para evaluar el rendimiento de los modelos de aprendizaje automático, utilizamo
 \begin{itemize}
   \item El error cuadrático medio (MSE) es una métrica que mide la diferencia entre los valores predichos por el modelo y los valores reales de la variable objetivo.
 El MSE se calcula como la media de los cuadrados de las diferencias entre los valores predichos y los valores reales.
-Elegimos el MSE para este problema en específico porque en el contexto de la predicción de series de tiempo, es importante minimizar los errores grandes para obtener predicciones más precisas.
+  \item RMSE es la raíz cuadrada del MSE, lo que nos da una medida de error en las mismas unidades que la variable objetivo.
+  Es útil porque nos permite interpretar el error en términos de la variable objetivo y compararlo con los valores reales.
+Elegimos el RMSE para este problema en específico porque en el contexto de la predicción de series de tiempo, es importante minimizar los errores grandes para obtener predicciones más precisas.
   \item El coeficiente de determinación (R²) es una métrica que mide la proporción de la varianza de la variable objetivo que es explicada por el modelo.
 El R² se calcula como la proporción de la varianza de los valores predichos que es explicada por la varianza de los valores reales.
 Es útil porque nos permite evaluar la capacidad del modelo para explicar la variabilidad de los datos.
@@ -374,6 +375,29 @@ Esto debido a que tenemos un mayor cantidad de datos en años reciente en contra
 Los modelos se entrenaron utilizando el conjunto de entrenamiento y se evaluaron en el conjunto de prueba.
 
 \subsection{Línea Base}
+
+\paragraph{Estacionalidad}
+
+\begin{figure}[htbp]
+   \centering
+   \includesvg[width=0.5\textwidth]{svg-inkscape/fft.svg}
+    \caption{Transformada de Fourier de la serie de tiempo de la velocidad del glaciar Sermeq Kujalleq en Groenlandia.}
+    \label{fig:frequencies}
+\end{figure}
+
+En varios de nuestros gráficos, vemos que los datos tienen un elemento estacional. Intuitivamente, sabemos que los datos de la velocidad del glaciar también deberían tener un componente estacional. La velocidad del glaciar debería oscilar cada año, más alta en verano y más baja en invierno. 
+Para validar estas sospechas, podemos fijarnos en las transformadas de Fourier de nuestras series.
+Las transformadas de Fourier nos permiten convertir una serie basada en la amplitud en una serie basada en la frecuencia. Son funciones de valor complejo que representan cada serie como una superposición de ondas sinusoidales en un plano complejo.
+
+Dado que en la Fig. \ref{fig:frequencies} hay un pico claro cerca de la frecuencia 0.0027 (1/365), eso indica estacionalidad anual.
+
+
+\paragraph{Estacionariedad}
+
+Una serie temporal es estacionaria cuando sus propiedades estadísticas como la media, la varianza y la autocorrelación no cambian con el tiempo.
+Métodos como ARIMA y sus variantes funcionan bajo el supuesto de que la serie temporal que modelizan es estacionaria. Si la serie temporal no es estacionaria, estos métodos no funcionan muy bien.
+
+
 \subsection{ARIMA}
 \subsection{XGBoost}
 \subsection{LSTM}
