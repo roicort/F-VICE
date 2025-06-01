@@ -205,18 +205,17 @@
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{Do, Not, Us, This, Code, Put, the, Correct, Terms, for,
-  Your, Paper}
+\keywords{Time Series, Machine Learning, Glaciers, ITSLIVE, ARIMA, XGBoost, LSTM}
 %% A "teaser" image appears between the author and affiliation
 %% information and the body of the document, and typically spans the
 %% page.
-\begin{teaserfigure}
-  \includegraphics[width=\textwidth]{sampleteaser}
-  \caption{Seattle Mariners at Spring Training, 2010.}
-  \Description{Enjoying the baseball game from the third-base
-  seats. Ichiro Suzuki preparing to bat.}
-  \label{fig:teaser}
-\end{teaserfigure}
+%\begin{teaserfigure}
+%  \includegraphics[width=\textwidth]{sampleteaser}
+%  \caption{Seattle Mariners at Spring Training, 2010.}
+%  \Description{Enjoying the baseball game from the third-base
+%  seats. Ichiro Suzuki preparing to bat.}
+%  \label{fig:teaser}
+%\end{teaserfigure}
 
 \received{20 February 2007}
 \received[revised]{12 March 2009}
@@ -410,7 +409,7 @@ Obtuvimos los siguientes resultados para el modelo OLS
 
 \begin{figure}[htbp]
    \centering
-   \includesvg[width=0.5\textwidth]{svg-inkscape/Jakobshavn_OLS_forecasts.svg}
+   \includesvg[width=0.5\textwidth]{svg-inkscape/Jakobshavn_OLS_forecast.svg}
     \caption{Predicciones del modelo OLS para el glaciar Jakobshavn.}
     \label{fig:jakobshavn_ols}
 \end{figure}
@@ -464,6 +463,23 @@ Para el modelo XGBoost, tuvimos que utilizar características adicionales.
 Estas características incluyen el año, mes, día del año, lags, rolling windows y diferencias de la variable objetivo.
 
 \begin{table}[H]
+  %Mejores parametros
+  \caption{Mejores hiperparámetros del modelo XGBoost}
+  \label{tab:xgb_params}
+  \begin{tabular}{lc}
+    \toprule
+    Hiperparámetro & Valor \\
+    \midrule
+    colsample\_bytree & 0.7 \\
+    learning\_rate & 0.1 \\
+    max\_depth & 3 \\
+    n\_estimators & 1000 \\
+    subsample & 0.7 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
   \caption{Resultados del modelo XGBoost}
   \label{tab:xgb}
   \begin{tabular}{lc}
@@ -481,29 +497,41 @@ Estas características incluyen el año, mes, día del año, lags, rolling windo
 
 \begin{figure}[htbp]
    \centering
-   \includesvg[width=0.5\textwidth]{svg-inkscape/Jakobshavn_XGB_forecasts.svg}
+   \includesvg[width=0.5\textwidth]{svg-inkscape/Jakobshavn_XGB_forecast.svg}
     \caption{Predicciones del modelo XGBoost para el glaciar Jakobshavn.}
     \label{fig:jakobshavn_xgb}
 \end{figure}
 
 
 \subsection{LSTM}
-\subsection{Comparación de Resultados}
+
+Para el modelo LSTM, utilizamos una arquitectura de red neuronal recurrente con capas LSTM.
+
+\begin{figure}[htbp]
+   \centering
+   \includesvg[width=0.5\textwidth]{svg-inkscape/Jakobshavn_LSTM_forecast.svg}
+    \caption{Predicciones del modelo LSTM para el glaciar Jakobshavn.}
+    \label{fig:jakobshavn_lstm}
+\end{figure}
+
 
 \begin{table}[H]
-  \caption{Frequency of Special Characters}
-  \label{tab:freq}
-  \begin{tabular}{ccl}
+  \caption{Resultados del modelo LSTM}
+  \label{tab:lstm}
+  \begin{tabular}{lc}
     \toprule
-    Modelo&MSE&Parámetros\\
+    Métrica & Valor \\
     \midrule
-    LSTM & 1 in 1,000& For Swedish names\\
-    ARIMA & 1 in 5& Common in math\\
-    OLS & 4 in 5 & Used in business\\
-    XGB & 1 in 40,000& Unexplained usage\\
-  \bottomrule
-\end{tabular}
+    MAE & 218.40 \\
+    MSE & 136648.44 \\
+    RMSE & 369.66 \\
+    $R^2$ & 0.9625 \\
+    Adj. $R^2$ & 0.9622 \\
+    \bottomrule
+  \end{tabular}
 \end{table}
+
+\subsection{Comparación de Resultados}
 
 \section{Conclusiones}
 

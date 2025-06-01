@@ -1,6 +1,6 @@
 %% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
-%% Accompanies image file 'Jakobshavn_XGB_forecasts_svg-tex.pdf' (pdf, eps, ps)
+%% Accompanies image file 'Jakobshavn_XGB_forecast_svg-tex.pdf' (pdf, eps, ps)
 %%
 %% To include the image in your LaTeX document, write
 %%   \input{<filename>.pdf_tex}
@@ -53,6 +53,6 @@
   \begin{picture}(1,0.5)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
-    \put(0,0){\includegraphics[width=\unitlength,page=1]{Jakobshavn_XGB_forecasts_svg-tex.pdf}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{Jakobshavn_XGB_forecast_svg-tex.pdf}}%
   \end{picture}%
 \endgroup%
