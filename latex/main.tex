@@ -439,7 +439,7 @@ No obstante, podemos observar una tendencia creciente en la serie temporal, lo q
 
 \subsection{ARIMA}
 
-A continuación se presenta la gráfica obtenida al aplicar un modelo $ARIMA(p=5,d=1,q=0)$ cuyos parámetros representan
+A continuación se presenta la gráfica obtenida al aplicar un modelo $ARIMA(p=9,d=1,q=2)$ cuyos parámetros representan
 \begin{itemize}
   \item \verb|p|: Número de retardos autorregresivos (AR).
   \item \verb|d|: Número de diferencias necesarias para hacer la serie estacionaria.
@@ -450,12 +450,44 @@ a los datos del glaciar Alaska-Columbia Glacier
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{ARIMA_1.png} % o {images/glaciar.png} si está en subcarpeta
-    \caption{Predicción glaciar Alaska-Columbia Glacier}
+    \includegraphics[width=0.5\textwidth]{ARIMA1.png} % o {images/glaciar.png} si está en subcarpeta
+    \caption{Predicciones del modelo ARIMA para el glaciar Jakobshavn}
     \label{fig:ARIMA1}
 \end{figure}
 
-Podemos observar 
+Podemos observar que la serie parece tener ciclos anuales o multianuales bien definidos sin embargo el modelo
+no sigue del todo estas oscilaciones, indicando que el modelo tiene limitaciones para capturar esta estacionalidad. 
+Esto lo podemos ver en la línea azul que representa las predicciones en el conjunto de prueba.
+
+Por otro lado las predicciones a futuro que realiza el modelo son constantes, lo que significa que 
+
+\begin{itemize}
+  \item El modelo ya no tiene nueva estructura que extrapolar.
+  \item Asume que la última tendencia o nivel es estacionario.
+\end{itemize}
+
+A continuación se muestra una tabla con las métricas de evaluación del modelo
+
+\begin{table}[H]
+  \caption{Resultados del modelo ARIMA}
+  \label{tab:ARIMA}
+  \begin{tabular}{lc}
+    \toprule
+    Métrica & Valor \\
+    \midrule
+    MAE & 5,416.85 \\
+    MSE & 3,293,357 \\
+    RMSE & 5,738.77 \\
+    $R^2$ & -0.788 \\
+    Adj. $R^2$ & -0.796 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Observando que el modelo ARIMA realiza un trabajo de ajuste y predicción muy malo, ya que el
+MSE es muy alto (entre otras cosas porque es muy sensible a outliers), además el $R^{2}$ negativo indica que 
+el modelo predice mucho peor que seleccionar el valor medio de los datos, y finalmente el $R^{2}\_adj$ implica que
+no ayudó el agregar complejidad al modelo.
 
 \subsection{XGBoost}
 
