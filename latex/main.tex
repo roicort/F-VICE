@@ -484,10 +484,13 @@ A continuación se muestra una tabla con las métricas de evaluación del modelo
   \end{tabular}
 \end{table}
 
-Observando que el modelo ARIMA realiza un trabajo de ajuste y predicción muy malo, ya que el
-MSE es muy alto (entre otras cosas porque es muy sensible a outliers), además el $R^{2}$ negativo indica que 
-el modelo predice mucho peor que seleccionar el valor medio de los datos, y finalmente el $R^{2}\_adj$ implica que
-no ayudó el agregar complejidad al modelo.
+El modelo ARIMA mostró limitaciones importantes debido a la naturaleza no estacionaria y estacional de la serie de tiempo
+ya que realiza un trabajo de ajuste y predicción muy malo, que se traduce en un MSE es muy alto, debido además a la presencia de ruido satelital (outliers),
+además el $R^{2}$ negativo indica que  el modelo predice mucho peor que seleccionar el valor medio de los datos.
+
+A pesar de aplicar una diferenciación de orden uno, los resultados sugieren  que la serie aún no era estacionaria, lo cual compromete la validez de los supuestos
+ de ARIMA. Además, la estacionalidad  no pudo ser capturada adecuadamente por un modelo ARIMA estándar, lo que resultó en predicciones planas y métricas
+ de desempeño pobres (R² < 0).
 
 \subsection{XGBoost}
 
@@ -567,9 +570,21 @@ Para el modelo LSTM, utilizamos una arquitectura de red neuronal recurrente con 
 
 \section{Conclusiones}
 
-En este trabajo, hemos propuesto un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares.
-Encontramos que los modelos de aprendizaje automático, son herramientas valiosas para la predicción de series de tiempo en el contexto de los glaciares.
-Los resultados obtenidos muestran que los modelos de aprendizaje automático pueden capturar patrones temporales en la velocidad de deshielo de los glaciares y proporcionar predicciones precisas.
+En este trabajo, hemos propuesto un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares, permitiendonos concluir para
+cada modelo lo siguiente:
+\begin{itemize}
+  \item La regresión lineal (OLS) mostró una capacidad limitada de ajuste, pero su simplicidad permite una interpretación directa de tendencias, sirviendo como línea base.
+  \item El modelo ARIMA, si bien conceptualmente apropiado para datos temporales, no logró capturar adecuadamente la estructura estacional de los glaciares. Las métricas de 
+desempeño ($R^2$ negativo) y las predicciones planas sugieren que su aplicabilidad directa es limitada para series con estacionalidad y ruido como las de ITS\_LIVE.
+  \item XGBoost demostró gran capacidad predictiva ($R^2 \approx 0.95$) al incorporar variables derivadas del tiempo (lags, rolling, mes, año, etc.), lo que compensó su incapacidad nativa para modelar secuencias.
+  \item LSTM, al aprovechar su arquitectura de memoria, fue el modelo más preciso ($R^{2} > 0.96$), mostrando gran potencial para modelar dependencias de largo plazo en los glaciares.
+
+  \end{itemize}
+Encontramos que los modelos de aprendizaje automático, son herramientas valiosas para la predicción de series de tiempo en el contexto de los glaciares ya que los resultados obtenidos muestran que estos  
+pueden capturar patrones temporales en la velocidad de deshielo de los glaciares y proporcionar predicciones precisas.
+
+En resumen, los resultados sugieren que los modelos de aprendizaje automático superan significativamente a los modelos clásicos en esta tarea, especialmente cuando se combinan con un buen diseño de variables y preprocesamiento. 
+Para futuros experimentos  se podrían explorar modelos híbridos (SARIMA-LSTM, DeepAR) y aplicar explicabilidad (SHAP, LRP) para entender las contribuciones temporales y estacionales a la predicción.
 
 \section{Appendices}
 %%
