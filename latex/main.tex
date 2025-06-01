@@ -399,6 +399,25 @@ Métodos como ARIMA y sus variantes funcionan bajo el supuesto de que la serie t
 
 
 \subsection{ARIMA}
+
+A continuación se presenta la gráfica obtenida al aplicar un modelo $ARIMA(p=5,d=1,q=0)$ cuyos parámetros representan
+\begin{itemize}
+  \item \verb|p|: Número de retardos autorregresivos (AR).
+  \item \verb|d|: Número de diferencias necesarias para hacer la serie estacionaria.
+  \item \verb|q|: Número de términos de media móvil (MA)
+\end{itemize}
+
+a los datos del glaciar Alaska-Columbia Glacier
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{ARIMA_1.png} % o {images/glaciar.png} si está en subcarpeta
+    \caption{Predicción glaciar Alaska-Columbia Glacier}
+    \label{fig:ARIMA1}
+\end{figure}
+
+Podemos observar 
+
 \subsection{XGBoost}
 \subsection{LSTM}
 \subsection{Comparación de Resultados}
