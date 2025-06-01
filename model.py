@@ -1,32 +1,34 @@
-from sklearn.model_selection import TimeSeriesSplit, cross_val_score
+from sklearn.model_selection import TimeSeriesSplit, GridSearchCV
 import xgboost as xgb
 
 def get_xgboost_model(X_train, y_train):
     """
-    Train an XGBoost model on the provided training data.
-    
-    Parameters:
-    - X_train: DataFrame containing the training features.
-    - y_train: Series containing the target variable.
-    
-    Returns:
-    - model: Trained XGBoost model.
+    Train an XGBoost model on the provided training data using GridSearchCV (sin lags).
     """
+    features = X_train.columns.tolist()
 
-    # Define the XGBoost model
-    model = xgb.XGBRegressor(
-        n_estimators=1000,
-        learning_rate=0.01,
-        max_depth=3,
-        subsample=0.7,
-        colsample_bytree=0.9,
-        random_state=42
+    model = xgb.XGBRegressor(random_state=42)
+
+    param_grid = {
+        'n_estimators': [200, 500, 1000],
+        'learning_rate': [0.01, 0.1],
+        'max_depth': [3, 5],
+        'subsample': [0.7, 1.0],
+        'colsample_bytree': [0.7, 1.0]
+    }
+
+    tscv = TimeSeriesSplit(n_splits=5)
+    grid_search = GridSearchCV(
+        model,
+        param_grid,
+        cv=tscv,
+        scoring='neg_root_mean_squared_error',
+        n_jobs=-1,
+        verbose=1
     )
 
-    model.fit(X_train[['year', 'month', 'dayofyear']], y_train)
+    grid_search.fit(X_train[features], y_train)
+    print(f"Mejores hiperparámetros: {grid_search.best_params_}")
+    print(f"Mejor score (neg MSE): {grid_search.best_score_}")
 
-    tscv = TimeSeriesSplit(n_splits=10)
-    scores = cross_val_score(model, X_train[['year', 'month', 'dayofyear']], y_train, cv=tscv, scoring='neg_mean_squared_log_error')
-    print(f"Cross-validated neg_mean_squared_log_error: {-scores.mean():.4f} ± {scores.std():.4f}")
-
-    return model, scores
+    return grid_search.best_estimator_, grid_search.cv_results_
