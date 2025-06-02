@@ -413,7 +413,33 @@ Obtuvimos los siguientes resultados para el modelo OLS
     \caption{Predicciones del modelo OLS para el glaciar Jakobshavn.}
     \label{fig:jakobshavn_ols}
 \end{figure}
- 
+
+\paragraph{Normalidad de los residuales}
+
+Para verificar la normalidad de los residuales del modelo OLS, utilizamos los siguientes tests.
+\begin{itemize}
+  \item \textbf{Jarque-Bera}: p-value = $0.0$
+  \item \textbf{Shapiro-Wilk}: p-value = $9.27 \times 10^{-40}$
+  \item \textbf{Kolmogorov-Smirnov}: p-value = $0.0$
+\end{itemize}
+
+Estos resultados indican que los residuales del modelo OLS no siguen una distribución normal, lo que sugiere que el modelo OLS no es adecuado para predecir la velocidad de los glaciares.
+
+\paragraph{Heterocedasticidad}
+
+La heterocedasticidad es un problema común en los modelos de regresión lineal, donde la varianza de los errores no es constante a lo largo de las observaciones.
+Para verificar la heterocedasticidad de los residuales del modelo OLS, utilizamos los siguientes tests.
+
+\begin{itemize}
+  \item \textbf{Breusch–Pagan}: p-value = $6.58 \times 10^{-5}$
+  \item \textbf{White}: p-value = $4.69 \times 10^{-8}$
+\end{itemize}
+
+Estos resultados indican que los residuales del modelo OLS presentan heterocedasticidad, lo que significa que la varianza de los errores no es constante a lo largo de las observaciones.
+
+\paragraph{Resultados del modelo OLS}
+
+Los resultados del modelo OLS se muestran en la Figura \ref{fig:jakobshavn_ols} y en la Tabla \ref{tab:ols}.
 
 \begin{table}[H]
   \caption{Resultados del modelo OLS}
@@ -433,9 +459,9 @@ Obtuvimos los siguientes resultados para el modelo OLS
 
 A pesar de que el modelo OLS tiene un $R^2$ de $0.4$, lo que indica que el modelo explica el $40\%$ de la varianza de los datos,
 los resultados no son muy buenos, ya que el RMSE es de $1862.37$, lo que indica que el modelo tiene un error cuadrático medio alto.
-Esperábamos que el modelo OLS no funcionara bien, ya que la serie temporal no es estacionaria y el modelo OLS no captura la estacionalidad de los datos.
-El modelo OLS sirve como una línea base para comparar los resultados de los otros modelos de aprendizaje automático.
-No obstante, podemos observar una tendencia creciente en la serie temporal, lo que indica que la velocidad de los glaciares está aumentando con el tiempo.
+Esperábamos que el modelo OLS no funcionara muy bien debido a los criterios de estacionariedad y normalidad que revisamos anteriormente.
+No ostante, el modelo OLS sirve como una línea base para comparar los resultados de los otros modelos de aprendizaje automático.
+Adicionalmente podemos observar una tendencia creciente en la serie temporal, lo que indica que la velocidad de los glaciares está aumentando con el tiempo.
 
 \subsection{ARIMA}
 
@@ -496,6 +522,7 @@ A pesar de aplicar una diferenciación de orden uno, los resultados sugieren  qu
 
 Para el modelo XGBoost, tuvimos que utilizar características adicionales.
 Estas características incluyen el año, mes, día del año, lags, rolling windows y diferencias de la variable objetivo.
+Adicionalmente, utilizamos GridSearchCV de Scikit-learn \cite{Pedregosa_Scikit-learn_Machine_Learning_2011} para encontrar los mejores hiperparámetros del modelo XGBoost los cuales se muestran en la Tabla \ref{tab:xgb_params}.
 
 \begin{table}[H]
   %Mejores parametros
@@ -513,6 +540,11 @@ Estas características incluyen el año, mes, día del año, lags, rolling windo
     \bottomrule
   \end{tabular}
 \end{table}
+
+Los resultados obtenidos con el modelo que se muestra en la Figura \ref{fig:jakobshavn_xgb}
+son bastante buenos, ya que el modelo logra capturar la estacionalidad de la serie de tiempo y las predicciones son más precisas que las del modelo OLS y ARIMA.
+No obstante, para predicciones futuras fuera del rango de datos de entrenamiento, el modelo XGBoost no extrapola bien.
+Esto en mayor medida debido a que el modelo no captura la estructura temporal de la serie de tiempo, sino que se basa en las características adicionales que le proporcionamos.
 
 \begin{table}[H]
   \caption{Resultados del modelo XGBoost}
@@ -541,6 +573,12 @@ Estas características incluyen el año, mes, día del año, lags, rolling windo
 \subsection{LSTM}
 
 Para el modelo LSTM, utilizamos una arquitectura de red neuronal recurrente con capas LSTM.
+El modelo LSTM utilizado consiste en dos capas LSTM bidireccionales con 64 unidades ocultas, seguidas de una capa densa. Se entrenó durante 30 épocas usando el optimizador Adam y la función de pérdida MSE, aplicando scheduled sampling para mejorar la generalización.
+Para la preparación de los datos de entrenamiento, se generaron características adicionales a partir de las columnas de fecha y la variable objetivo, como rezagos (lags), medias móviles y codificación estacional con funciones seno y coseno del día del año. Posteriormente, los datos se dividieron en conjuntos de entrenamiento y prueba (70\% y 30\% respectivamente). 
+Ademas los datos se normalizaron utilizando el StandardScaler de Scikit-learn para que las características tuvieran media cero y desviación estándar uno, lo que es crucial para el buen funcionamiento de las redes neuronales.
+Finalmente, se transformaron en secuencias para alimentar el modelo LSTM, permitiendo capturar dependencias temporales y patrones estacionales en la serie de tiempo. 
+Esto es especialmente importante en las redes LSTM, ya que están diseñadas para manejar datos secuenciales y aprender de las relaciones temporales en los datos.
+
 
 \begin{figure}[htbp]
    \centering
@@ -548,6 +586,11 @@ Para el modelo LSTM, utilizamos una arquitectura de red neuronal recurrente con 
     \caption{Predicciones del modelo LSTM para el glaciar Jakobshavn.}
     \label{fig:jakobshavn_lstm}
 \end{figure}
+
+Obtuvimos buenos resultados con el modelo LSTM, ya que el modelo logra capturar la estacionalidad de la serie de tiempo y las predicciones son más precisas que las del modelo OLS y ARIMA.
+No obstante, al igual que con el modelo XGBoost, el modelo LSTM no extrapola bien para predicciones futuras fuera del rango de datos de entrenamiento. 
+Sin embargo el modelo LSTM logra capturar la estructura temporal de la serie de tiempo y la tendencia de aumento 
+de la velocidad de deshielo de los glaciares.
 
 
 \begin{table}[H]
@@ -566,7 +609,20 @@ Para el modelo LSTM, utilizamos una arquitectura de red neuronal recurrente con 
   \end{tabular}
 \end{table}
 
-\subsection{Comparación de Resultados}
+\subsection{Discusión}
+
+Los resultados obtenidos con los distintos modelos de aprendizaje automático muestran que los modelos de aprendizaje automático son capaces de capturar la estacionalidad y la tendencia de aumento de la velocidad de deshielo de los glaciares.
+El modelo OLS, aunque simple, sirve como una línea base y muestra que la velocidad de deshielo de los glaciares tiene una tendencia creciente.
+El modelo ARIMA, aunque conceptualmente apropiado para datos temporales, no logró capturar adecuadamente la estructura estacional de los glaciares y sus predicciones fueron planas, lo que sugiere que su aplicabilidad directa es limitada para series con estacionalidad y ruido como las de $ITSLIVE$.
+El modelo XGBoost demostró gran capacidad predictiva al incorporar variables derivadas del tiempo (lags, rolling, mes, año, etc.), lo que compensó su incapacidad nativa para modelar secuencias.
+El modelo LSTM, al aprovechar su arquitectura de memoria, fue el modelo más preciso, mostrando gran potencial para modelar dependencias de largo plazo en los glaciares.
+Es importante notar que a pesar de que utilizar features adicionales, esto implica que las predicciones futuras (a manera autorregresiva) no son extrapolables.
+
+Se trata de un problema complejo, ya que la velocidad de deshielo de los glaciares es un fenómeno natural que está influenciado por muchos factores, como el clima, la topografía y la geología.
+Los datos que utilizamos son limitados y no contienen toda la información necesaria para predecir la velocidad de deshielo de los glaciares mas allá de la temporalidad.
+Este trabajo podria ser indudablemente mejorado con la incorporación de datos adicionales como datos climáticos. 
+No obstante, los resultados obtenidos consideramos que los resultados obtenidos son satisfactorios ya que muetras que los modelos de aprendizaje automatico pueden ser útiles para esta tarea.
+
 
 \section{Conclusiones}
 
