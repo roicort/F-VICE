@@ -164,7 +164,7 @@
   que ha aumentado en las últimas décadas debido al cambio climático.
   Este proceso tiene un impacto significativo en el nivel del mar y en los ecosistemas locales.  
   En este trabajo, proponemos un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares. 
-  Utilizamos un conjunto de datos del proyecto $ITSLIVE$ (Time Series of Land Ice Velocity and Elevation) del Jet Propulsion Laboratory de la NASA, que a partir de imágenes satelitales, proporciona información sobre la velocidad de deshielo de los glaciares.
+  Utilizamos un conjunto de datos del proyecto $ITS\_LIVE$ (Time Series of Land Ice Velocity and Elevation) del Jet Propulsion Laboratory de la NASA, que a partir de imágenes satelitales, proporciona información sobre la velocidad de deshielo de los glaciares.
   Finalmente comparamos los resultados de distintos modelos de aprendizaje automático y discutimos los resultados obtenidos.
 \end{abstract}
 
@@ -205,17 +205,16 @@
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{Time Series, Machine Learning, Glaciers, ITSLIVE, ARIMA, XGBoost, LSTM}
+\keywords{Time Series, Machine Learning, Glaciers, $ITS\_LIVE$, ARIMA, XGBoost, LSTM}
 %% A "teaser" image appears between the author and affiliation
 %% information and the body of the document, and typically spans the
 %% page.
-%\begin{teaserfigure}
-%  \includegraphics[width=\textwidth]{sampleteaser}
-%  \caption{Seattle Mariners at Spring Training, 2010.}
-%  \Description{Enjoying the baseball game from the third-base
-%  seats. Ichiro Suzuki preparing to bat.}
-%  \label{fig:teaser}
-%\end{teaserfigure}
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{sampleteaser}
+  \caption{Sermeq Kujalleq, Groenlandia, $ITS\_LIVE$ de la NASA.}
+  \Description{Imagenes satelitales del Glaciar Sermeq Kujalleq.}
+  \label{fig:teaser}
+\end{teaserfigure}
 
 \received{20 February 2007}
 \received[revised]{12 March 2009}
@@ -228,14 +227,17 @@
 
 \section{Introduction}
 
+
 La predicción de series de tiempo es una tarea importante en el
 ámbito del aprendizaje automático y la ciencia de datos. Desde la
 predicción de precios de acciones hasta la predicción del clima, las
 series de tiempo son una herramienta valiosa para la toma de decisiones
 y la planificación. No obstante, el estudio de series de tiempo en el contexto de los glaciares es un tema menos explorado.
 
-El deshielo de los glaciares es un fenómeno natural que ha aumentado en las últimas décadas debido al cambio climático.
-Este proceso tiene un impacto significativo en el nivel del mar y en los ecosistemas locales.
+El Ártico se ha calentado hasta cuatro veces más rápido que el resto del planeta durante los últimos 40 años 
+y se prevé que las temperaturas globales se calienten aún más en las próximas décadas, 
+lo que provocará un importante retroceso de los glaciares durante el siglo XXI \cite{kavan_new_2025}.
+
 Por lo tanto, es crucial comprender, analizar y predecir la velocidad de deshielo de los glaciares para mitigar sus efectos negativos.
 En este contexto, la modelación de series de tiempo se convierte en una herramienta esencial para predecir la velocidad de deshielo de los glaciares.
 No obstante, para comprender plenamente cómo responden los glaciares al cambio medioambiental 
@@ -246,14 +248,19 @@ el comportamiento dinámico de los glaciares y su respuesta al cambio climático
 Estudiar la velocidad de los glaciares es crucial para comprender cómo responden al cambio climático y cómo afectan al nivel del mar.
 
 En este trabajo, proponemos un enfoque basado en aprendizaje automático para predecir la serie de tiempo de la velocidad de deshielo de los glaciares.
-Utilizamos un conjunto de datos del proyecto $ITSLIVE$ (Time Series of Land Ice Velocity and Elevation) del Jet Propulsion Laboratory de la NASA, que a partir de imágenes satelitales, proporciona información sobre la velocidad de deshielo de los glaciares.
+Utilizamos un conjunto de datos del proyecto  $ITS\_LIVE$ (Time Series of Land Ice Velocity and Elevation) del Jet Propulsion Laboratory de la NASA, que a partir de imágenes satelitales, proporciona información sobre la velocidad de deshielo de los glaciares.
 Compararemos los resultados de distintos modelos de aprendizaje automático y discutiremos los resultados obtenidos.
 
 \section{Antecedentes}
 
-Durante la última década, el número de observaciones por satélite disponibles ha aumentado considerablemente, 
+A partir de que superar los $1.5\,^\circ\mathrm{C}$ de calentamiento global por encima de los niveles preindustriales se ha convertido en un hecho cada vez más seguro, 
+la comunidad científica ha centrado su atención en la preocupación de cambios que esto implica. 
+No obstante, todavía no se conocen bien las consecuencias de tal superación de la temperatura global para los glaciares y su contribución al aumento del nivel del mar y a la disponibilidad de agua \cite{schuster_2025}.
+
+
+Por otro lado, durante la última década el número de observaciones por satélite disponibles ha aumentado considerablemente, 
 lo que ha permitido realizar mediciones mucho más frecuentes de la velocidad de los glaciares.
-Proyectos como el de Intermission Time Series of Land Ice Velocity and Elevation ($ITS_LIVE$) de la NASA 
+Proyectos como el de Intermission Time Series of Land Ice Velocity and Elevation ($ITS\_LIVE$) de la NASA 
 aceleran la comprensión de los procesos críticos de los glaciares y las capas de hielo proporcionando a la comunidad científica registros globales, 
 de baja latencia, exhaustivos y de última generación de las velocidades y elevaciones de la superficie observadas desde el espacio \cite{lei_processing_2021} .
 
@@ -261,11 +268,11 @@ Estos datos por lo tanto permiten a través de la modelación de series de tiemp
 predecir la velocidad de los glaciares y su evolución en el tiempo. 
 
 Trabajos como el de derkacheva \cite{derkacheva_data_2020} han utilizado métodos como Lowess para el estudio de estas series de tiempo, mientras que anteriormente 
-ya se habían utlizado modelos de regresión lineal y modelos ARIMA para la predicción de series de tiempo \cite{noauthor_time_2022} sobre otros conjuntos de datos no ITSLIVE.
+ya se habían utlizado modelos de regresión lineal y modelos ARIMA para la predicción de series de tiempo \cite{noauthor_time_2022} sobre otros conjuntos de datos no  $ITS\_LIVE$.
 
 \section{Metodología}
 
-Para la predicción de la velocidad de los glaciares, utilizamos el conjunto de datos del proyecto $ITSLIVE$ de la NASA.
+Para la predicción de la velocidad de los glaciares, utilizamos el conjunto de datos del proyecto  $ITS\_LIVE$ de la NASA.
 Este conjunto de datos contiene información sobre la velocidad de deshielo de los glaciares a partir de imágenes satelitales.
 
 Cada observación de velocidad de deshielo de los glaciares se registra en un intervalo de tiempo específico, lo que nos permite construir una serie de tiempo.
@@ -367,7 +374,7 @@ Es útil porque nos permite evaluar la capacidad del modelo para explicar la var
 
 \section{Experimentos y Resultados}
 
-Para evaluar el rendimiento de los modelos de aprendizaje automático, realizamos una serie de experimentos utilizando el conjunto de datos del proyecto $ITSLIVE$ de la NASA.
+Para evaluar el rendimiento de los modelos de aprendizaje automático, realizamos una serie de experimentos utilizando el conjunto de datos del proyecto  $ITS\_LIVE$ de la NASA.
 Seleccionamos un subconjunto de glaciares importantes y obtuvimos las series de tiempo de la velocidad de deshielo de estos glaciares.
 El conjunto de datos se dividió en un conjunto de entrenamiento y un conjunto de prueba en un porcentaje de $70\%$ para entrenamiento y $30\%$ para prueba.
 Esto debido a que tenemos un mayor cantidad de datos en años reciente en contraste a los primeros años de observación, esto en gran medida debido a la disponibilidad de imágenes satelitales.  
@@ -573,10 +580,11 @@ Esto en mayor medida debido a que el modelo no captura la estructura temporal de
 \subsection{LSTM}
 
 Para el modelo LSTM, utilizamos una arquitectura de red neuronal recurrente con capas LSTM.
-El modelo LSTM utilizado consiste en dos capas LSTM bidireccionales con 64 unidades ocultas, seguidas de una capa densa. Se entrenó durante 30 épocas usando el optimizador Adam y la función de pérdida MSE, aplicando scheduled sampling para mejorar la generalización.
-Para la preparación de los datos de entrenamiento, se generaron características adicionales a partir de las columnas de fecha y la variable objetivo, como rezagos (lags), medias móviles y codificación estacional con funciones seno y coseno del día del año. Posteriormente, los datos se dividieron en conjuntos de entrenamiento y prueba (70\% y 30\% respectivamente). 
-Ademas los datos se normalizaron utilizando el StandardScaler de Scikit-learn para que las características tuvieran media cero y desviación estándar uno, lo que es crucial para el buen funcionamiento de las redes neuronales.
-Finalmente, se transformaron en secuencias para alimentar el modelo LSTM, permitiendo capturar dependencias temporales y patrones estacionales en la serie de tiempo. 
+El modelo LSTM utilizado consiste en dos capas LSTM bidireccionales con 64 unidades ocultas, seguidas de una capa densa y con un total de 145537 parámetros. 
+El modelo fue implementado utilizando Pytorch \cite{Ansel_PyTorch_2_Faster_2024} y se entrenó durante 30 épocas usando el optimizador Adam y la función de pérdida MSE, aplicando scheduled sampling para mejorar la generalización.
+Para la preparación de los datos de entrenamiento, se generaron características adicionales a partir de las columnas de fecha y la variable objetivo, como rezagos (lags), medias móviles y codificación estacional con funciones seno y coseno del día del año. Posteriormente, los datos se dividieron en conjuntos de entrenamiento y prueba (70\% y 30\% respectivamente).
+Además los datos se normalizaron utilizando el StandardScaler de Scikit-learn para que las características tuvieran media cero y desviación estándar uno, lo que es crucial para el buen funcionamiento de las redes neuronales.
+Finalmente, se transformaron en secuencias para alimentar el modelo LSTM, permitiendo capturar dependencias temporales y patrones estacionales en la serie de tiempo.
 Esto es especialmente importante en las redes LSTM, ya que están diseñadas para manejar datos secuenciales y aprender de las relaciones temporales en los datos.
 
 
@@ -591,7 +599,6 @@ Obtuvimos buenos resultados con el modelo LSTM, ya que el modelo logra capturar 
 No obstante, al igual que con el modelo XGBoost, el modelo LSTM no extrapola bien para predicciones futuras fuera del rango de datos de entrenamiento. 
 Sin embargo el modelo LSTM logra capturar la estructura temporal de la serie de tiempo y la tendencia de aumento 
 de la velocidad de deshielo de los glaciares.
-
 
 \begin{table}[H]
   \caption{Resultados del modelo LSTM}
@@ -613,7 +620,7 @@ de la velocidad de deshielo de los glaciares.
 
 Los resultados obtenidos con los distintos modelos de aprendizaje automático muestran que los modelos de aprendizaje automático son capaces de capturar la estacionalidad y la tendencia de aumento de la velocidad de deshielo de los glaciares.
 El modelo OLS, aunque simple, sirve como una línea base y muestra que la velocidad de deshielo de los glaciares tiene una tendencia creciente.
-El modelo ARIMA, aunque conceptualmente apropiado para datos temporales, no logró capturar adecuadamente la estructura estacional de los glaciares y sus predicciones fueron planas, lo que sugiere que su aplicabilidad directa es limitada para series con estacionalidad y ruido como las de $ITSLIVE$.
+El modelo ARIMA, aunque conceptualmente apropiado para datos temporales, no logró capturar adecuadamente la estructura estacional de los glaciares y sus predicciones fueron planas, lo que sugiere que su aplicabilidad directa es limitada para series con estacionalidad y ruido como las de  $ITS\_LIVE$.
 El modelo XGBoost demostró gran capacidad predictiva al incorporar variables derivadas del tiempo (lags, rolling, mes, año, etc.), lo que compensó su incapacidad nativa para modelar secuencias.
 El modelo LSTM, al aprovechar su arquitectura de memoria, fue el modelo más preciso, mostrando gran potencial para modelar dependencias de largo plazo en los glaciares.
 Es importante notar que a pesar de que utilizar features adicionales, esto implica que las predicciones futuras (a manera autorregresiva) no son extrapolables.
@@ -650,7 +657,7 @@ Para futuros experimentos  se podrían explorar modelos híbridos (SARIMA-LSTM, 
 %% consistent spelling of the heading.
 \begin{acks}
 Agradecemos a la clase de la Maestría en Ciencias e Ingenierías de la Computación de la UNAM por su apoyo y orientación en este trabajo.
-Agradecemos al Jet Propulsion Laboratory de la NASA por proporcionar el conjunto de datos del proyecto $ITSLIVE$.
+Agradecemos al Jet Propulsion Laboratory de la NASA por proporcionar el conjunto de datos del proyecto  $ITS\_LIVE$.
 \end{acks}
 
 %%
