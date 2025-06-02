@@ -190,11 +190,16 @@ if st.session_state.coords:
 
             if modelo_sel == "XGBoost":
                 with st.spinner("Entrenando modelo XGBoost..."):
-                        from model import get_xgboost_model
-                        model, scores = get_xgboost_model(X_train, y_train)
-                        st.session_state.model = model
-                        st.success(f"Modelo {modelo_sel} entrenado exitosamente.")
-                        st.write(f"Cross-validated neg_mean_squared_log_error: {-scores.mean():.4f} ± {scores.std():.4f}")
+                    from model import get_xgboost_model
+                    model, cv_results = get_xgboost_model(X_train, y_train)
+                    st.session_state.model = model
+                    st.success(f"Modelo {modelo_sel} entrenado exitosamente.")
+
+                    best_idx = cv_results['rank_test_score'].argmin()
+                    mean_score = cv_results['mean_test_score'][best_idx]
+                    std_score = cv_results['std_test_score'][best_idx]
+
+                    st.write(f"Cross-validated neg_root_mean_squared_error: {mean_score:.4f} ± {std_score:.4f}")
 
             elif modelo_sel == "Regresor":
                 with st.spinner("Entrenando modelo GBR..."):
