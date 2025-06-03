@@ -38,9 +38,13 @@ Los datos a utilizar serán los datos de satélite y de sensores instalados en l
 
 Estos datos estan disponibles en el siguiente enlace: [ITS_LIVE](https://its-live.jpl.nasa.gov/) o en su visualizador: https://mappin.itsliveiceflow.science
 
-### Composicion del código
+### Composicion del repositorio con los códigos importantes
 
-* A
+* app.py: Se encuentra el código para ejecutar la app de Streamlit para visualizar los datos y los modelos.
+* arima_model.py: Contiene el modelo ARIMA que se ajustará a los datos.
+* gbregresor_model.py: Tiene el código de un modelo Gradient Boost para regresión.
+* model.py: Es el código para el modelo XGBoost.
+* neural.py: Contiene el modelo de la Red Recurrente LSTM.
 
 ### Conformación del equipo
 
