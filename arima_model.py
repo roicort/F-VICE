@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 class SklearnLikeARIMA:
-    def __init__(self, order=(5, 1, 0)):
+    def __init__(self, order=(9, 1, 2)):
         self.order = order
         self.model = None
         self.fitted_model = None
@@ -54,7 +54,7 @@ class SklearnLikeARIMA:
 
         
 def get_arima_model(X_train, y_train):
-    model = SklearnLikeARIMA(order=(5, 1, 0))
+    model = SklearnLikeARIMA(order=(9, 1, 2))
     model.fit(X_train, y_train)
 
     tscv = TimeSeriesSplit(n_splits=5)
@@ -64,7 +64,7 @@ def get_arima_model(X_train, y_train):
         X_t, X_v = X_train.iloc[train_idx], X_train.iloc[val_idx]
         y_t, y_v = y_train.iloc[train_idx], y_train.iloc[val_idx]
 
-        m = SklearnLikeARIMA(order=(5, 1, 0))
+        m = SklearnLikeARIMA(order=(9, 1, 2))
         m.fit(X_t, y_t)
         y_pred = m.predict(X_v)
         error = mean_squared_log_error(y_v, np.clip(y_pred, a_min=0, a_max=None))

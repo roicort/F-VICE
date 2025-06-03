@@ -474,12 +474,14 @@ Adicionalmente podemos observar una tendencia creciente en la serie temporal, lo
 
 A continuación se presenta la gráfica obtenida al aplicar un modelo $ARIMA(p=9,d=1,q=2)$ cuyos parámetros representan
 \begin{itemize}
-  \item \verb|p|: Número de retardos autorregresivos (AR).
-  \item \verb|d|: Número de diferencias necesarias para hacer la serie estacionaria.
-  \item \verb|q|: Número de términos de media móvil (MA)
+  \item \verb|p|: Número de retardos autorregresivos (AR) (número de datos del pasado $x_{p}$ usados para modelar el valor actual).
+  \item \verb|d|: Número de diferencias necesarias para hacer la serie estacionaria (es decir con media y varianza constantes).
+  \item \verb|q|: Número de términos de media móvil (MA) (número de errores $\epsilon_{q}$ considerados para modelar el valor actual).
 \end{itemize}
 
 a los datos del glaciar Jakobshavn.
+
+Los parámetros del modelo se obtuvieron usando la función auto\_arima.
 
 \begin{figure}[H]
     \centering
