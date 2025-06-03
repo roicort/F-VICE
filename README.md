@@ -38,6 +38,10 @@ Los datos a utilizar serán los datos de satélite y de sensores instalados en l
 
 Estos datos estan disponibles en el siguiente enlace: [ITS_LIVE](https://its-live.jpl.nasa.gov/) o en su visualizador: https://mappin.itsliveiceflow.science
 
+### Composicion del código
+
+* A
+
 ### Conformación del equipo
 
 - Luis Vicente Ruiz Hernández
